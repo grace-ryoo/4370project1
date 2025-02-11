@@ -1,6 +1,9 @@
 package uga.cs4370.mydbimpl;
 
+import java.util.ArrayList;
+
 import uga.cs4370.mydb.*;
+
 import java.util.List;
 
 public class RAImpl implements RA {
@@ -69,9 +72,27 @@ public class RAImpl implements RA {
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
         if (origAttr.size() != renamedAttr.size()) {
             throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
-        }
+        } // if
 
-    }
+        for (String a : origAttr) {
+            if (!rel.hasAttr(a)) {
+                throw new IllegalArgumentException("Attribute " + a + " is not present in relation.");
+            } // if
+        } // for
+
+        List<String> newAttrNamesList = new ArrayList<>(rel.getAttrs());
+
+        for (int i = 0; i < origAttr.size(); i++) {
+
+        } // for
+
+        Relation renamedRelation = new RelationBuilder()
+                .attributeNames(newAttrNamesList)
+                .attributeTypes(rel.getTypes())
+                .build();
+
+        return renamedRelation;
+    } // rename
 
     /**
      * Performs cartesian product on relations rel1 and rel2.
@@ -84,8 +105,8 @@ public class RAImpl implements RA {
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
         if (rel1 == rel2) {
             throw new IllegalArgumentException("Attributes in rel1 and rel2 cannot have common attributes.");
-        }
-    }
+        } // if
+    } // cartesianProduct
 
     /**
      * Performs natural join on relations rel1 and rel2.
