@@ -1,7 +1,12 @@
 package uga.cs4370.mydbimpl;
 
-import uga.cs4370.mydb.*;
 import java.util.List;
+
+import uga.cs4370.mydb.Cell;
+import uga.cs4370.mydb.Predicate;
+import uga.cs4370.mydb.RA;
+import uga.cs4370.mydb.Relation;
+import uga.cs4370.mydb.RelationBuilder;
 
 public class RAImpl implements RA {
 
@@ -13,7 +18,19 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation select(Relation rel, Predicate p) {
+        Relation selectedRelation = new RelationBuilder()
+            .attributeNames(rel.getAttrs()) 
+            .attributeTypes(rel.getTypes()) 
+            .build();
 
+        for (int i = 0; i < rel.getSize(); i++) {
+            List<Cell> row = rel.getRow(i);
+            
+            if (p.check(row)) {
+                selectedRelation.insert(row);
+            }
+        }
+        return selectedRelation;
     }
 
     /**
@@ -27,7 +44,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation project(Relation rel, List<String> attrs) {
-
+        return null;
     }
 
     /**
@@ -39,7 +56,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation union(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -52,7 +69,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation diff(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -67,7 +84,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
-
+        return null;
     }
 
     /**
@@ -79,7 +96,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -89,7 +106,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -105,6 +122,6 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p) {
-
+        return null;
     }
 }
