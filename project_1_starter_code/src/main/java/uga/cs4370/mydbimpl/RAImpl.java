@@ -67,6 +67,9 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
+        if (origAttr.size() != renamedAttr.size()) {
+            throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
+        }
 
     }
 
@@ -79,7 +82,9 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
-
+        if (rel1 == rel2) {
+            throw new IllegalArgumentException("Attributes in rel1 and rel2 cannot have common attributes.");
+        }
     }
 
     /**
