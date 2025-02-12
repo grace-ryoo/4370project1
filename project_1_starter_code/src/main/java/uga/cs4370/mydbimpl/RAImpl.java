@@ -74,16 +74,18 @@ public class RAImpl implements RA {
             throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
         } // if
 
-        for (String a : origAttr) {
-            if (!rel.hasAttr(a)) {
-                throw new IllegalArgumentException("Attribute " + a + " is not present in relation.");
-            } // if
-        } // for
-
         List<String> newAttrNamesList = new ArrayList<>(rel.getAttrs());
 
         for (int i = 0; i < origAttr.size(); i++) {
+            String ogName = origAttr.get(i);
+            String newName = renamedAttr.get(i);
 
+            if (!rel.hasAttr(ogName)) {
+                throw new IllegalArgumentException("Attribute " + ogName + " is not present in relation.");
+            } // if
+
+            int relIndex = rel.getAttrIndex(ogName);
+            newAttrNamesList.set(relIndex, newName);
         } // for
 
         Relation renamedRelation = new RelationBuilder()
