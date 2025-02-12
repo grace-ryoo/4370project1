@@ -3,7 +3,6 @@ package uga.cs4370.mydbimpl;
 import java.util.List;
 
 import uga.cs4370.mydb.Cell;
-import uga.cs4370.mydb.Predicate;
 import uga.cs4370.mydb.Relation;
 import uga.cs4370.mydb.RelationBuilder;
 import uga.cs4370.mydb.Type;
@@ -26,31 +25,24 @@ public class Driver {
         rel1.print();
         */
 
-       // testing out the select method in RAImpl 
+       // testing out the project method in RAImpl. feel free to delete or comment out when we submit 
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
 
+        // dummy data 
         student.insert(List.of(Cell.val("S001"), Cell.val("John"), Cell.val("CS"), Cell.val(30)));
         student.insert(List.of(Cell.val("S002"), Cell.val("Jane"), Cell.val("Math"), Cell.val(20)));
 
         student.print();
 
-        Predicate creditPredicate = new Predicate() {
-            @Override
-            public boolean check(List<Cell> row) {
-                int credits = row.get(3).getAsInt();
-                return credits > 20;
-            }
-        };
-
+        List<String> projectionAttrs = List.of("ID", "name");
         RAImpl raImpl = new RAImpl();
-
-        Relation selectedStudents = raImpl.select(student, creditPredicate);
-
-        System.out.println("\nSelected Students (tot_cred > 30):");
-        selectedStudents.print();
+        Relation projectedStudents = raImpl.project(student, projectionAttrs);
+    
+        System.out.println("\nProjected Students (ID, name):");
+        projectedStudents.print();
     }
 
 }
