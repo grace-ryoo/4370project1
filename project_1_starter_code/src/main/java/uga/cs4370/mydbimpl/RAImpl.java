@@ -105,9 +105,27 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
-        if (rel1 == rel2) {
-            throw new IllegalArgumentException("Attributes in rel1 and rel2 cannot have common attributes.");
-        } // if
+        List<String> rel1Attr = rel1.getAttrs();
+        List<String> rel2Attr = rel2.getAttrs();
+
+        for (String a : rel1Attr) {
+            if (rel2.hasAttr(a)) {
+                throw new IllegalArgumentException("Attributes in rel1 and rel2 have common attributes.");
+            } // if
+        } // for
+
+        List<String> newAttrNames = new ArrayList<>(rel1Attr);
+        newAttrNames.addAll(rel2Attr);
+
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        newAttrTypes.addAll(rel2.getTypes());
+
+        Relation cpRelation = new RelationBuilder()
+                .attributeNames(newAttrNames)
+                .attributeTypes(newAttrTypes)
+                .build();
+
+        return cpRelation;
     } // cartesianProduct
 
     /**
