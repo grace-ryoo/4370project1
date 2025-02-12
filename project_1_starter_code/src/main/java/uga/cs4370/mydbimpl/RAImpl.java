@@ -6,6 +6,10 @@ import uga.cs4370.mydb.*;
 
 import java.util.List;
 
+import javax.naming.spi.DirStateFactory;
+
+import jdk.dynalink.linker.support.CompositeTypeBasedGuardingDynamicLinker;
+
 public class RAImpl implements RA {
 
     /**
@@ -72,7 +76,7 @@ public class RAImpl implements RA {
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
         if (origAttr.size() != renamedAttr.size()) {
             throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
-        } // if
+        }
 
         List<String> newAttrNamesList = new ArrayList<>(rel.getAttrs());
 
@@ -82,11 +86,11 @@ public class RAImpl implements RA {
 
             if (!rel.hasAttr(ogName)) {
                 throw new IllegalArgumentException("Attribute " + ogName + " is not present in relation.");
-            } // if
+            }
 
             int relIndex = rel.getAttrIndex(ogName);
             newAttrNamesList.set(relIndex, newName);
-        } // for
+        }
 
         Relation renamedRelation = new RelationBuilder()
                 .attributeNames(newAttrNamesList)
@@ -111,8 +115,8 @@ public class RAImpl implements RA {
         for (String a : rel1Attr) {
             if (rel2.hasAttr(a)) {
                 throw new IllegalArgumentException("Attributes in rel1 and rel2 have common attributes.");
-            } // if
-        } // for
+            }
+        }
 
         List<String> newAttrNames = new ArrayList<>(rel1Attr);
         newAttrNames.addAll(rel2Attr);
@@ -124,6 +128,16 @@ public class RAImpl implements RA {
                 .attributeNames(newAttrNames)
                 .attributeTypes(newAttrTypes)
                 .build();
+
+        for (int i = 0; i < rel1.getSize(); i++) {
+            List<Cell> rel1row = rel1.getRow(i);
+            for (int j = 0; j < rel2.getSize(); j++) {
+                List<Cell> rel2row = rel2.getRow(j);
+                List<Cell> combinationRow = new ArrayList<>(rel1row);
+                combinationRow.addAll(rel2row);
+                cpRelation.insert(combinationRow);
+            }
+        }
 
         return cpRelation;
     } // cartesianProduct
