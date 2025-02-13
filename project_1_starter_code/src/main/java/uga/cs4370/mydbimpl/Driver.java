@@ -27,7 +27,7 @@ public class Driver {
         */
 
        // interesting query #1 - catherine
-       // How many students taking credits more than 30  
+       // How many students taking credits more than 20  
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -51,7 +51,7 @@ public class Driver {
 
         Relation selectedStudents = raImpl.select(student, creditPredicate);
 
-        System.out.println("\nSelected Students (tot_cred > 30):");
+        System.out.println("\nSelected Students (tot_cred > 20):");
         selectedStudents.print();
     }
 
