@@ -1,14 +1,14 @@
 package uga.cs4370.mydbimpl;
 
 import java.util.ArrayList;
-
-import uga.cs4370.mydb.*;
-
 import java.util.List;
 
-import javax.naming.spi.DirStateFactory;
-
-import jdk.dynalink.linker.support.CompositeTypeBasedGuardingDynamicLinker;
+import uga.cs4370.mydb.Cell;
+import uga.cs4370.mydb.Predicate;
+import uga.cs4370.mydb.RA;
+import uga.cs4370.mydb.Relation;
+import uga.cs4370.mydb.RelationBuilder;
+import uga.cs4370.mydb.Type;
 
 public class RAImpl implements RA {
 
@@ -20,7 +20,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation select(Relation rel, Predicate p) {
-
+        return null;
     }
 
     /**
@@ -34,7 +34,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation project(Relation rel, List<String> attrs) {
-
+        return null;
     }
 
     /**
@@ -46,7 +46,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation union(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -59,7 +59,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation diff(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -78,24 +78,35 @@ public class RAImpl implements RA {
             throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
         }
 
-        List<String> newAttrNamesList = new ArrayList<>(rel.getAttrs());
-
-        for (int i = 0; i < origAttr.size(); i++) {
-            String ogName = origAttr.get(i);
-            String newName = renamedAttr.get(i);
-
-            if (!rel.hasAttr(ogName)) {
-                throw new IllegalArgumentException("Attribute " + ogName + " is not present in relation.");
-            }
-
-            int relIndex = rel.getAttrIndex(ogName);
-            newAttrNamesList.set(relIndex, newName);
-        }
+        int indexName = rel.getAttrIndex("name");
 
         Relation renamedRelation = new RelationBuilder()
-                .attributeNames(newAttrNamesList)
+                .attributeNames(rel.getAttrs())
                 .attributeTypes(rel.getTypes())
                 .build();
+        
+        for (String n : origAttr) {
+            if (!rel.hasAttr(n)) {
+                throw new IllegalArgumentException("Attribute " + n + " is not present in relation.");
+            }
+        }
+
+        for (int i = 0; i < rel.getSize(); i++) {
+            List<Cell> row = rel.getRow(i);
+            List<Cell> rowNew = rel.getRow(i);
+
+            String originalName = row.get(indexName).getAsString();
+
+            for (int j = 0; j < origAttr.size(); j++) {
+                if (originalName.equals(origAttr.get(j))) {
+                    rowNew.set(indexName, Cell.val(renamedAttr.get(j)));
+                }
+            }
+
+            renamedRelation.insert(rowNew);
+        }
+
+        
 
         return renamedRelation;
     } // rename
@@ -149,7 +160,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -165,6 +176,6 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p) {
-
+        return null;
     }
 }
