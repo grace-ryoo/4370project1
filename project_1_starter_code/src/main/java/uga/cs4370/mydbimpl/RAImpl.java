@@ -2,6 +2,8 @@ package uga.cs4370.mydbimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import uga.cs4370.mydb.Cell;
 import uga.cs4370.mydb.Predicate;
@@ -80,16 +82,23 @@ public class RAImpl implements RA {
 
         int indexName = rel.getAttrIndex("name");
 
+        Set<String> presentNames = new HashSet<>();
+        for (int k = 0; k < rel.getSize(); k++) {
+            presentNames.add(rel.getRow(k).get(indexName).getAsString());
+        }
+
+        for (String n : origAttr) {
+            if (!presentNames.contains(n)) {
+                throw new IllegalArgumentException("Attribute " + n + " is not present in relation.");
+            }
+        }
+
         Relation renamedRelation = new RelationBuilder()
                 .attributeNames(rel.getAttrs())
                 .attributeTypes(rel.getTypes())
                 .build();
         
-        for (String n : origAttr) {
-            if (!rel.hasAttr(n)) {
-                throw new IllegalArgumentException("Attribute " + n + " is not present in relation.");
-            }
-        }
+        
 
         for (int i = 0; i < rel.getSize(); i++) {
             List<Cell> row = rel.getRow(i);
