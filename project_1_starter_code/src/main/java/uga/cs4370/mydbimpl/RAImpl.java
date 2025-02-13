@@ -97,6 +97,9 @@ public class RAImpl implements RA {
                 .attributeTypes(rel.getTypes())
                 .build();
 
+        for (int j = 0; j < rel.getSize(); j++) {
+            renamedRelation.insert(rel.getRow(j));
+        }
         return renamedRelation;
     
     } // rename

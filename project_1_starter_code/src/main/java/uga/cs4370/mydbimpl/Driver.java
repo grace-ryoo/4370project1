@@ -1,5 +1,6 @@
 package uga.cs4370.mydbimpl;
 
+
 import java.util.List;
 
 import uga.cs4370.mydb.Cell;
@@ -34,14 +35,14 @@ public class Driver {
 
         student.print();
 
-        List<String> og = List.of("John", "Jane");
-        List<String> on = List.of("Ella", "Ally");
-       
+        List<String> origAttrs = List.of("name", "dept_name");
+        List<String> renamedAttrs = List.of("student_name", "department");
 
         RAImpl raImpl = new RAImpl();
+        Relation renamed = raImpl.rename(student, origAttrs, renamedAttrs);
+        renamed.print(); 
+       
 
-        Relation renamedStudents = raImpl.rename(student, og, on);
-        renamedStudents.print();
     }
 
 }
