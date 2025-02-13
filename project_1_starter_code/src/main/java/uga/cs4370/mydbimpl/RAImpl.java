@@ -1,8 +1,17 @@
 package uga.cs4370.mydbimpl;
 
-import uga.cs4370.mydb.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import uga.cs4370.mydb.Cell;
+import uga.cs4370.mydb.Predicate;
+import uga.cs4370.mydb.RA;
+import uga.cs4370.mydb.Relation;
+import uga.cs4370.mydb.RelationBuilder;
+import uga.cs4370.mydb.Type;
+
 
 public class RAImpl implements RA {
 
@@ -14,7 +23,18 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation select(Relation rel, Predicate p) {
+        Relation selectedRelation = new RelationBuilder()
+            .attributeNames(rel.getAttrs()) 
+            .attributeTypes(rel.getTypes()) 
+            .build();
 
+        for (int i = 0; i < rel.getSize(); i++) {
+            List<Cell> row = rel.getRow(i);
+            if (p.check(row)) {
+                selectedRelation.insert(row);
+            }
+        }
+        return selectedRelation;
     }
 
     /**
@@ -28,8 +48,52 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation project(Relation rel, List<String> attrs) {
+        List<String> relAttrs = rel.getAttrs();
+        List<Type> relTypes = rel.getTypes();
 
+        // base case: check if attributes present n rel
+        for (String attr : attrs) {
+            if (!relAttrs.contains(attr)) {
+                throw new IllegalArgumentException("Attribute not found in relation.");
+            }
+        }
+
+        // find indices and types of attributes
+        List<Integer> attrIndex = new ArrayList<>();
+        List<Type> projectTypes = new ArrayList<>();
+        for (String attr : attrs) {
+            int index = relAttrs.indexOf(attr);
+            attrIndex.add(index);
+            projectTypes.add(relTypes.get(index));
+        }
+
+        // build new relation with the proper attributes
+        Relation projectedRelation = new RelationBuilder()
+            .attributeNames(attrs)
+            .attributeTypes(projectTypes)
+            .build();
+
+        // use set to make sure there are no duplicates
+        Set<List<Cell>> uniqueRows = new HashSet<>();
+
+        // create new relation with projected data
+        for (int i = 0; i < rel.getSize(); i++) {
+            List<Cell> originalRow = rel.getRow(i);
+            List<Cell> newRow = new ArrayList<>();
+            for (int index : attrIndex) {
+                newRow.add(originalRow.get(index));
+            }
+            uniqueRows.add(newRow);
+        }
+
+        // insert uniqueRows (no duplicates) into the new projected relation that was created
+        for (List<Cell> row : uniqueRows) {
+            projectedRelation.insert(row);
+        }
+
+        return projectedRelation;
     }
+
 
     /**
      * Performs the union operation on the relations rel1 and rel2.
@@ -40,7 +104,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation union(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -53,7 +117,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation diff(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
@@ -68,7 +132,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
-
+        return null;
     }
 
     /**
@@ -80,7 +144,7 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
-
+        return null;
     }
 
     /**
