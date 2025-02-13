@@ -104,8 +104,47 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation union(Relation rel1, Relation rel2) {
-        return null;
-    }
+        //get the attributes of both relations
+        List<String> attr1 = rel1.getAttrs();
+        List<String> attr2 = rel2.getAttrs();
+
+        //check if the relations are compatible
+        if (!attr1.equals(attr2)) {
+            throw new IllegalArgumentException("The two relations are not compatible.");
+        } //if
+
+        //create a new relation builder for the results
+        RelationBuilder rb = new RelationBuilder();
+        rb.attributeNames(attr1);
+        Relation result = rb.build();
+
+        //add all rows from rel1 into new relation
+        for (int i = 0; i < rel1.getSize(); i++) {
+            result.insert(rel1.getRow(i));
+        } //for
+
+        //add all rows from rel2 that are not in new relation
+        for (int i = 0; i < rel2.getSize(); i++) {
+            List<Cell> row = rel2.getRow(i);
+            boolean exists = false;
+
+            //check if it exists in the results
+            for (int j = 0; j < result.getSize(); j++) {
+                if (result.getRow(j).equals(row)) {
+                    exists = true;
+                    break;
+                } //if
+            } //for
+
+            //add the unique row
+            if (!exists) {
+                result.insert(row);
+            } //if
+        } //for
+
+        //return new relation
+        return result;
+    } //union
 
     /**
      * Performs the set difference operation on the relations rel1 and rel2.
@@ -117,8 +156,42 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation diff(Relation rel1, Relation rel2) {
-        return null;
-    }
+        //get the attributes of both relations
+        List<String> attr1 = rel1.getAttrs();
+        List<String> attr2 = rel2.getAttrs();
+
+        //check if the relations are compatible
+        if (!attr1.equals(attr2)) {
+            throw new IllegalArgumentException("The two relations are not compatible.");
+        } //if
+
+        //create a new relation builder for the results
+        RelationBuilder rb = new RelationBuilder();
+        rb.attributeNames(attr1);
+        Relation result = rb.build();
+
+        //adds rows from rel1 not in rel2
+        for (int i = 0; i < rel1.getSize(); i++) {
+            List<Cell> row = rel1.getRow(i);
+            boolean exists = false;
+
+            //check if it exists in the rel2
+            for (int j = 0; j < rel2.getSize(); j++) {
+                if (rel2.getRow(j).equals(row)) {
+                    exists = true;
+                    break;
+                } //if
+            } //for
+
+            //add the unique row
+            if (!exists) {
+                result.insert(row);
+            } //if
+        } //for
+
+        //return new relation
+        return result;
+    } //diff
 
     /**
      * Renames the attributes in origAttr of relation rel to corresponding names
