@@ -38,8 +38,18 @@ public class Driver {
         student.insert(List.of(Cell.val("S002"), Cell.val("Jane"), Cell.val("Math"), Cell.val(20)));
 
         student.print();
+        //  // predidate implement through anaonymous class
+        Predicate creditPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(3).getAsInt() > 20;
+            }
 
-        Predicate creditPredicate = row -> row.get(3).getAsInt() > 20;
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
 
 
         RAImpl raImpl = new RAImpl();
