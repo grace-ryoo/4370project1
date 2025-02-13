@@ -71,5 +71,6 @@ public interface Relation {
      * The result should look similar to MySql table outputs.
      */
     public void print();
+    
 
 }

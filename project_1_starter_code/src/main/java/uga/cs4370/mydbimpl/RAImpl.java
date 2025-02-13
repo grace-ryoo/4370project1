@@ -2,6 +2,7 @@ package uga.cs4370.mydbimpl;
 
 import uga.cs4370.mydb.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class RAImpl implements RA {
 
@@ -89,7 +90,58 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2) {
+        // Get the attributes of the two relations
+        List<String> attr1 = rel1.getAttrs();
+        List<String> attr2 = rel2.getAttrs();
 
+        // Find common attributes
+        List<String> commonAttrs = new ArrayList<>();
+        for (String attr : attr1) {
+            if (attr2.contains(attr)) {
+                commonAttrs.add(attr);
+            }
+        }
+
+        // Create a new list of attributes for the resulting relation
+        List<String> newAttrs = new ArrayList<>(attr1);
+        for (String attr : attr2) {
+            if (!commonAttrs.contains(attr)) {
+                newAttrs.add(attr);
+            }
+        }
+
+        // Create a new relation for the result
+        RelationBuilder rb = new RelationBuilder();
+        rb.attributeNames(newAttrs);
+        Relation newRel = rb.build();
+
+        // Perform the natural join
+        for (int i = 0; i < rel1.getSize(); i++) {
+            List<Cell> row1 = rel1.getRow(i);
+            for (int j = 0; j < rel2.getSize(); j++) {
+                List<Cell> row2 = rel2.getRow(j);
+                boolean match = true;
+                for (String a : commonAttrs) {
+                    if (!row1.get(attr1.indexOf(a)).getAsString().equals(row2.get(attr2.indexOf(a)).getAsString())) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    List<Cell> newRow = new ArrayList<>();
+                    for (String a : newAttrs) {
+                        if (attr1.contains(a)) {
+                            newRow.add(row1.get(attr1.indexOf(a)));
+                        } else {
+                            newRow.add(row2.get(attr2.indexOf(a)));
+                        }
+                    }
+                    newRel.insert(newRow);
+                }
+            }
+        }
+
+        return newRel;
     }
 
     /**
@@ -105,6 +157,39 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p) {
+        // Get the attributes of the two relations
+        List<String> attr1 = rel1.getAttrs();
+        List<String> attr2 = rel2.getAttrs();
 
+        // Check for common attributes and throw an exception if any are found
+        for (String attr : attr1) {
+            if (attr2.contains(attr)) {
+                throw new IllegalArgumentException("Relations have common attributes: " + attr);
+            }
+        }
+
+        // Create a new list of attributes for the resulting relation
+        List<String> newAttrs = new ArrayList<>(attr1);
+        newAttrs.addAll(attr2);
+
+        // Create a new relation builder for the result
+        RelationBuilder rb = new RelationBuilder();
+        rb.attributeNames(newAttrs);
+        Relation newRel = rb.build();
+
+        // Perform the theta join
+        for (int i = 0; i < rel1.getSize(); i++) {
+            List<Cell> row1 = rel1.getRow(i);
+            for (int j = 0; j < rel2.getSize(); j++) {
+                List<Cell> row2 = rel2.getRow(j);
+                if (p.evaluate(row1, row2)) {
+                    List<Cell> newRow = new ArrayList<>(row1);
+                    newRow.addAll(row2);
+                    newRel.insert(newRow); 
+                }
+            }
+        }
+
+        return newRel;
     }
 }
