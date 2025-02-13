@@ -2,8 +2,6 @@ package uga.cs4370.mydbimpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 import uga.cs4370.mydb.Cell;
 import uga.cs4370.mydb.Predicate;
@@ -80,44 +78,27 @@ public class RAImpl implements RA {
             throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
         }
 
-        int indexName = rel.getAttrIndex("name");
+        List<String> newAttrNamesList = new ArrayList<>(rel.getAttrs());
 
-        Set<String> presentNames = new HashSet<>();
-        for (int k = 0; k < rel.getSize(); k++) {
-            presentNames.add(rel.getRow(k).get(indexName).getAsString());
-        }
+        for (int i = 0; i < origAttr.size(); i++) {
+            String ogName = origAttr.get(i);
+            String newName = renamedAttr.get(i);
 
-        for (String n : origAttr) {
-            if (!presentNames.contains(n)) {
-                throw new IllegalArgumentException("Attribute " + n + " is not present in relation.");
+            if (!rel.hasAttr(ogName)) {
+                throw new IllegalArgumentException("Attribute " + ogName + " is not present in relation.");
             }
+
+            int relIndex = rel.getAttrIndex(ogName);
+            newAttrNamesList.set(relIndex, newName);
         }
 
         Relation renamedRelation = new RelationBuilder()
-                .attributeNames(rel.getAttrs())
+                .attributeNames(newAttrNamesList)
                 .attributeTypes(rel.getTypes())
                 .build();
-        
-        
-
-        for (int i = 0; i < rel.getSize(); i++) {
-            List<Cell> row = rel.getRow(i);
-            List<Cell> rowNew = rel.getRow(i);
-
-            String originalName = row.get(indexName).getAsString();
-
-            for (int j = 0; j < origAttr.size(); j++) {
-                if (originalName.equals(origAttr.get(j))) {
-                    rowNew.set(indexName, Cell.val(renamedAttr.get(j)));
-                }
-            }
-
-            renamedRelation.insert(rowNew);
-        }
-
-        
 
         return renamedRelation;
+    
     } // rename
 
     /**
