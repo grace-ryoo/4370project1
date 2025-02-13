@@ -39,13 +39,8 @@ public class Driver {
 
         student.print();
 
-        Predicate creditPredicate = new Predicate() {
-        @Override
-        public boolean check(List<Cell> row) {
-                int credits = row.get(3).getAsInt();
-                return credits > 20;
-            }
-        };
+        Predicate creditPredicate = row -> row.get(3).getAsInt() > 20;
+
 
         RAImpl raImpl = new RAImpl();
 
