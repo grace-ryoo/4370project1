@@ -3,6 +3,7 @@ package uga.cs4370.mydbimpl;
 import java.util.List;
 
 import uga.cs4370.mydb.Cell;
+import uga.cs4370.mydb.Predicate;
 import uga.cs4370.mydb.Relation;
 import uga.cs4370.mydb.RelationBuilder;
 import uga.cs4370.mydb.Type;
@@ -25,7 +26,8 @@ public class Driver {
         rel1.print();
         */
 
-       // testing out the project method in RAImpl. feel free to delete or comment out when we submit 
+       // interesting query #1 - catherine
+       // How many students taking credits more than 30  
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -37,12 +39,20 @@ public class Driver {
 
         student.print();
 
-        List<String> projectionAttrs = List.of("ID", "name");
+        Predicate creditPredicate = new Predicate() {
+        @Override
+        public boolean check(List<Cell> row) {
+                int credits = row.get(3).getAsInt();
+                return credits > 20;
+            }
+        };
+
         RAImpl raImpl = new RAImpl();
-        Relation projectedStudents = raImpl.project(student, projectionAttrs);
-    
-        System.out.println("\nProjected Students (ID, name):");
-        projectedStudents.print();
+
+        Relation selectedStudents = raImpl.select(student, creditPredicate);
+
+        System.out.println("\nSelected Students (tot_cred > 30):");
+        selectedStudents.print();
     }
 
 }
