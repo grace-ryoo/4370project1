@@ -48,7 +48,6 @@ public class Driver {
             }
         };
 
-/**
         RAImpl raImpl = new RAImpl();
 
         Relation selectedStudents = raImpl.select(student, creditPredicate);
@@ -56,13 +55,15 @@ public class Driver {
         System.out.println("\nStudents taking tot_creds > 125: ");
         selectedStudents.print();
 
+    /**
+
         List<String> origAttrs = List.of("name", "dept_name");
         List<String> renamedAttrs = List.of("student_name", "department");
 
         RAImpl raImpl = new RAImpl();
         Relation renamed = raImpl.rename(student, origAttrs, renamedAttrs);
         renamed.print(); 
-*/
+**/
         // Test cartesianProduct()
         /**
         Relation student = new RelationBuilder()
