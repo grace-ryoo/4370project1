@@ -301,9 +301,14 @@ public class RAImpl implements RA {
         List<String> newAttrs = new ArrayList<>(attr1);
         newAttrs.addAll(attr2);
 
+        // Create a new list of attribute types for the resulting relation
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        newAttrTypes.addAll(rel2.getTypes());
+
         // Create a new relation builder for the result
         RelationBuilder rb = new RelationBuilder();
         rb.attributeNames(newAttrs);
+        rb.attributeTypes(newAttrTypes);
         Relation newRel = rb.build();
 
         // Perform the theta join
@@ -314,7 +319,7 @@ public class RAImpl implements RA {
                 if (p.evaluate(row1, row2)) {
                     List<Cell> newRow = new ArrayList<>(row1);
                     newRow.addAll(row2);
-                    newRel.insert(newRow); 
+                    newRel.insert(newRow); // Use the insert method of Relation
                 }
             }
         }

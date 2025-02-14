@@ -116,7 +116,87 @@ public class Driver {
         System.out.println("\nAll possible classroom and time slot combinations on day 'M' with capacity > 50: ");
         finalResult2.print();
 
+        // interesting query #3 - Khushi Bhatamrekar
+        // find all instructors who teach courses in the "Comp. Sci." department, have a
+        // salary greater than $80,000, and are teaching a course that has a
+        // prerequisite
 
+        Relation instructor = new RelationBuilder()
+                .attributeNames(List.of("ID", "name", "instructor_dept_name", "salary"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.DOUBLE))
+                .build();
+        instructor.loadData("mysql_exports/instructor.csv"); // this path should work but might have to change it to your personal absolute path
+        
+        Relation course = new RelationBuilder()
+                .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+                .build();
+        course.loadData("mysql_exports/course.csv");
+
+        Relation prereqs = new RelationBuilder()
+                .attributeNames(List.of("prereq_course_id", "prereq_id"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING))
+                .build();
+        prereqs.loadData("mysql_exports/prereq.csv");
+
+        Predicate salaryPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(3).getAsDouble() > 80000;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        Predicate compSciPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(2).getAsString().equals("Comp. Sci.");
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        RAImpl raImpl3 = new RAImpl();
+        Relation instructors = raImpl3.select(instructor, salaryPredicate);
+        Relation compSciCourses = raImpl3.select(course, compSciPredicate);
+
+        Relation courseJoin = raImpl3.join(instructors, compSciCourses, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(2).getAsString().equals(row2.get(2).getAsString());
+            }
+        });
+
+        Relation finalJoin = raImpl3.join(courseJoin, prereqs, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(4).getAsString().equals(row2.get(0).getAsString());
+            }
+        });
+
+        Relation rel3Result = raImpl3.project(finalJoin,
+                List.of("ID", "name", "dept_name", "salary", "course_id", "title", "prereq_id"));
+        
+        System.out.println(
+                "\nInstructors who teach courses in the 'Comp. Sci.' department, have a salary greater than $80,000, and are teaching a course with prerequisites: ");
+        rel3Result.print();
     /**
 
         List<String> origAttrs = List.of("name", "dept_name");
