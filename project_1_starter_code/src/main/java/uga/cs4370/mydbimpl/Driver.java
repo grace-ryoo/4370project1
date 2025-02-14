@@ -28,12 +28,18 @@ public class Driver {
         */
 
        // interesting query #1 - catherine
-       // How many students taking credits more than 125  
+       // How many students taking credits more than 125 & who are enrolled in at least one course.
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
         student.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/student.csv"); // this path should work but might have to change it to your personal absolute path 
+
+        Relation takes = new RelationBuilder()
+                .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
+                .build();
+        takes.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/takes.csv");
 
         //  predidate implement through anaonymous class
         Predicate creditPredicate = new Predicate() {
@@ -50,10 +56,13 @@ public class Driver {
 
         RAImpl raImpl = new RAImpl();
 
-        Relation selectedStudents = raImpl.select(student, creditPredicate);
+        Relation filteredStudents = raImpl.select(student, creditPredicate);
+        Relation joinedStudents = raImpl.join(filteredStudents, takes);  // join on student ID
 
-        System.out.println("\nStudents taking tot_creds > 125: ");
-        selectedStudents.print();
+        Relation finalResult = raImpl.project(joinedStudents, List.of("ID", "name", "dept_name", "tot_cred", "course_id"));
+
+        System.out.println("\nStudents taking tot_creds > 125 and enrolled in at least one course: ");
+        finalResult.print();
 
     /**
 

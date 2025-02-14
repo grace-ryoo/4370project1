@@ -50,42 +50,44 @@ public class RAImpl implements RA {
         List<String> relAttrs = rel.getAttrs();
         List<Type> relTypes = rel.getTypes();
 
-        // base case: check if attributes present n rel
+        // base case: check if attributes are present in the relation
         for (String attr : attrs) {
             if (!relAttrs.contains(attr)) {
                 throw new IllegalArgumentException("Attribute not found in relation.");
             }
         }
 
-        // find indices and types of attributes
+        // find indices and types
         List<Integer> attrIndex = new ArrayList<>();
         List<Type> projectTypes = new ArrayList<>();
         for (String attr : attrs) {
             int index = relAttrs.indexOf(attr);
-            attrIndex.add(index);
-            projectTypes.add(relTypes.get(index));
+            if (index != -1) {
+                attrIndex.add(index);  // add the index 
+                projectTypes.add(relTypes.get(index));  // add the type 
+            }
         }
 
-        // build new relation with the proper attributes
+        // build with attribute names and types
         Relation projectedRelation = new RelationBuilder()
             .attributeNames(attrs)
             .attributeTypes(projectTypes)
             .build();
 
-        // use set to make sure there are no duplicates
+        // use set for no duplicate rows
         Set<List<Cell>> uniqueRows = new HashSet<>();
 
-        // create new relation with projected data
+        // create projected rows
         for (int i = 0; i < rel.getSize(); i++) {
             List<Cell> originalRow = rel.getRow(i);
             List<Cell> newRow = new ArrayList<>();
             for (int index : attrIndex) {
-                newRow.add(originalRow.get(index));
+                newRow.add(originalRow.get(index));  
             }
-            uniqueRows.add(newRow);
+            uniqueRows.add(newRow);  // add the row to the set 
         }
 
-        // insert uniqueRows (no duplicates) into the new projected relation that was created
+        // insert the unique rows 
         for (List<Cell> row : uniqueRows) {
             projectedRelation.insert(row);
         }
