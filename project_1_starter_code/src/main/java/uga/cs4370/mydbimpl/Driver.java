@@ -64,6 +64,59 @@ public class Driver {
         System.out.println("\nStudents taking tot_creds > 125 and enrolled in at least one course: ");
         finalResult.print();
 
+        // interesting query #2 - Grace Ryoo
+        // What are all possible classroom and time slot combinations on Monday ('M') with classroom capacities greater than 50 (classroom.capacity > 50)
+        Relation classrooms = new RelationBuilder()
+                .attributeNames(List.of("building", "room_number", "capacity"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
+                .build();
+        student.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/classrooms.csv"); // this path should work but might have to change it to your personal absolute path 
+
+        Relation times = new RelationBuilder()
+                .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.INTEGER))
+                .build();
+        takes.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/times.csv");
+
+        //  predidate checking for capacity > 50
+        Predicate capacityPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(2).getAsInt() > 50;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        //  predidate filtering for Monday time slots
+        Predicate mondayPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(1).getAsString().equals("M");
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        RAImpl raImpl2 = new RAImpl();
+
+        Relation filteredClassrooms = raImpl2.select(classrooms, capacityPredicate);
+        Relation filteredTimes = raImpl2.select(times, mondayPredicate);  // join on student ID
+
+        Relation classroomTimeCombinations = raImpl2.cartesianProduct(filteredClassrooms, filteredTimes);
+
+        Relation finalResult2 = raImpl2.project(classroomTimeCombinations, List.of("building", "room_number", "capacity", "time_slot_id", "start_hr", "start_min", "end_hr", "end_min"));
+
+        System.out.println("\nAll possible classroom and time slot combinations on day 'M' with capacity > 50: ");
+        finalResult2.print();
+
+
     /**
 
         List<String> origAttrs = List.of("name", "dept_name");
