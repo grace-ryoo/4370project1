@@ -33,13 +33,13 @@ public class Driver {
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        student.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/student.csv"); // this path should work but might have to change it to your personal absolute path 
+        student.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv"); // this path should work but might have to change it to your personal absolute path 
 
         Relation takes = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
-        takes.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/takes.csv");
+        takes.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
 
         //  predidate implement through anaonymous class
         Predicate creditPredicate = new Predicate() {
@@ -70,13 +70,13 @@ public class Driver {
                 .attributeNames(List.of("building", "room_number", "capacity"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        student.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/classrooms.csv"); // this path should work but might have to change it to your personal absolute path 
+        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv"); // this path should work but might have to change it to your personal absolute path 
 
         Relation times = new RelationBuilder()
                 .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.INTEGER))
                 .build();
-        takes.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/times.csv");
+        times.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/time_slot.csv");
 
         //  predidate checking for capacity > 50
         Predicate capacityPredicate = new Predicate() {
@@ -116,7 +116,87 @@ public class Driver {
         System.out.println("\nAll possible classroom and time slot combinations on day 'M' with capacity > 50: ");
         finalResult2.print();
 
+        // interesting query #3 - Khushi Bhatamrekar
+        // find all instructors who teach courses in the "Comp. Sci." department, have a
+        // salary greater than $80,000, and are teaching a course that has a
+        // prerequisite
 
+        Relation instructor = new RelationBuilder()
+                .attributeNames(List.of("ID", "name", "instructor_dept_name", "salary"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.DOUBLE))
+                .build();
+        instructor.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); // this path should work but might have to change it to your personal absolute path
+        
+        Relation course = new RelationBuilder()
+                .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+                .build();
+        course.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
+
+        Relation prereqs = new RelationBuilder()
+                .attributeNames(List.of("prereq_course_id", "prereq_id"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING))
+                .build();
+        prereqs.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/prereq.csv");
+
+        Predicate salaryPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(3).getAsDouble() > 80000;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        Predicate compSciPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(2).getAsString().equals("Comp. Sci.");
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        RAImpl raImpl3 = new RAImpl();
+        Relation instructors = raImpl3.select(instructor, salaryPredicate);
+        Relation compSciCourses = raImpl3.select(course, compSciPredicate);
+
+        Relation courseJoin = raImpl3.join(instructors, compSciCourses, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(2).getAsString().equals(row2.get(2).getAsString());
+            }
+        });
+
+        Relation finalJoin = raImpl3.join(courseJoin, prereqs, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(4).getAsString().equals(row2.get(0).getAsString());
+            }
+        });
+
+        Relation rel3Result = raImpl3.project(finalJoin,
+                List.of("ID", "name", "dept_name", "salary", "course_id", "title", "prereq_id"));
+        
+        System.out.println(
+                "\nInstructors who teach courses in the 'Comp. Sci.' department, have a salary greater than $80,000, and are teaching a course with prerequisites: ");
+        rel3Result.print();
     /**
 
         List<String> origAttrs = List.of("name", "dept_name");
