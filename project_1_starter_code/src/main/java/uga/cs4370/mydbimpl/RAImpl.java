@@ -1,7 +1,6 @@
 package uga.cs4370.mydbimpl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +11,13 @@ import uga.cs4370.mydb.Relation;
 import uga.cs4370.mydb.RelationBuilder;
 import uga.cs4370.mydb.Type;
 
+
+import uga.cs4370.mydb.Cell;
+import uga.cs4370.mydb.Predicate;
+import uga.cs4370.mydb.RA;
+import uga.cs4370.mydb.Relation;
+import uga.cs4370.mydb.RelationBuilder;
+import uga.cs4370.mydb.Type;
 
 public class RAImpl implements RA {
 
@@ -132,8 +138,35 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
-        return null;
-    }
+        if (origAttr.size() != renamedAttr.size()) {
+            throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
+        }
+
+        List<String> newAttrNamesList = new ArrayList<>(rel.getAttrs());
+
+        for (int i = 0; i < origAttr.size(); i++) {
+            String ogName = origAttr.get(i);
+            String newName = renamedAttr.get(i);
+
+            if (!rel.hasAttr(ogName)) {
+                throw new IllegalArgumentException("Attribute " + ogName + " is not present in relation.");
+            }
+
+            int relIndex = rel.getAttrIndex(ogName);
+            newAttrNamesList.set(relIndex, newName);
+        }
+
+        Relation renamedRelation = new RelationBuilder()
+                .attributeNames(newAttrNamesList)
+                .attributeTypes(rel.getTypes())
+                .build();
+
+        for (int j = 0; j < rel.getSize(); j++) {
+            renamedRelation.insert(rel.getRow(j));
+        }
+        return renamedRelation;
+    
+    } // rename
 
     /**
      * Performs cartesian product on relations rel1 and rel2.
@@ -144,8 +177,38 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
-        return null;
-    }
+        List<String> rel1Attr = rel1.getAttrs();
+        List<String> rel2Attr = rel2.getAttrs();
+
+        for (String a : rel1Attr) {
+            if (rel2.hasAttr(a)) {
+                throw new IllegalArgumentException("Attributes in rel1 and rel2 have common attributes.");
+            }
+        }
+
+        List<String> newAttrNames = new ArrayList<>(rel1Attr);
+        newAttrNames.addAll(rel2Attr);
+
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        newAttrTypes.addAll(rel2.getTypes());
+
+        Relation cpRelation = new RelationBuilder()
+                .attributeNames(newAttrNames)
+                .attributeTypes(newAttrTypes)
+                .build();
+
+        for (int i = 0; i < rel1.getSize(); i++) {
+            List<Cell> rel1row = rel1.getRow(i);
+            for (int j = 0; j < rel2.getSize(); j++) {
+                List<Cell> rel2row = rel2.getRow(j);
+                List<Cell> combinationRow = new ArrayList<>(rel1row);
+                combinationRow.addAll(rel2row);
+                cpRelation.insert(combinationRow);
+            }
+        }
+
+        return cpRelation;
+    } // cartesianProduct
 
     /**
      * Performs natural join on relations rel1 and rel2.
