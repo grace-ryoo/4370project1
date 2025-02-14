@@ -25,6 +25,8 @@ public class Driver {
         rel1.loadData("/path/to/exported/csv_file");
         rel1.print();
 */
+        // Test rename()
+        /**
         Relation student = new RelationBuilder()
             .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
             .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -41,7 +43,37 @@ public class Driver {
         RAImpl raImpl = new RAImpl();
         Relation renamed = raImpl.rename(student, origAttrs, renamedAttrs);
         renamed.print(); 
+*/
+        // Test cartesianProduct()
+        Relation student = new RelationBuilder()
+            .attributeNames(List.of("ID", "name"))
+            .attributeTypes(List.of(Type.STRING, Type.STRING))
+            .build();
+        
+        student.insert(List.of(Cell.val("S001"), Cell.val("John")));
+        student.insert(List.of(Cell.val("S002"), Cell.val("Jane")));
+
+        Relation course = new RelationBuilder()
+            .attributeNames(List.of("course_id", "course_name"))
+            .attributeTypes(List.of(Type.STRING, Type.STRING))
+            .build();
+
+        course.insert(List.of(Cell.val("C101"), Cell.val("Math")));
+        course.insert(List.of(Cell.val("C102"), Cell.val("CS")));
        
+        System.out.println("Student Relation:");
+        student.print();
+        
+        System.out.println("Course Relation:");
+        course.print();
+
+        RAImpl raImpl = new RAImpl();
+        Relation result = raImpl.cartesianProduct(student, course);
+
+        // Print result relation
+        System.out.println("Cartesian Product Result:");
+        result.print();
+
 
     }
 
