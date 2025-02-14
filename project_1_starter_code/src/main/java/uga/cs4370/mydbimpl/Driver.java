@@ -28,22 +28,18 @@ public class Driver {
         */
 
        // interesting query #1 - catherine
-       // How many students taking credits more than 20  
+       // How many students taking credits more than 125  
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
+        student.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/student.csv"); // this path should work but might have to change it to your personal absolute path 
 
-        // dummy data 
-        student.insert(List.of(Cell.val("S001"), Cell.val("John"), Cell.val("CS"), Cell.val(30)));
-        student.insert(List.of(Cell.val("S002"), Cell.val("Jane"), Cell.val("Math"), Cell.val(20)));
-
-        student.print();
-        //  // predidate implement through anaonymous class
+        //  predidate implement through anaonymous class
         Predicate creditPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(3).getAsInt() > 20;
+                return row.get(3).getAsInt() > 125;
             }
 
             @Override
@@ -57,7 +53,7 @@ public class Driver {
 
         Relation selectedStudents = raImpl.select(student, creditPredicate);
 
-        System.out.println("\nSelected Students (tot_cred > 20):");
+        System.out.println("\nStudents taking tot_creds > 125: ");
         selectedStudents.print();
 
         List<String> origAttrs = List.of("name", "dept_name");
