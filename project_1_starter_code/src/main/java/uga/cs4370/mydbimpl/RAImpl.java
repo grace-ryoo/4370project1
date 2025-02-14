@@ -232,9 +232,18 @@ public class RAImpl implements RA {
             }
         }
 
+        // Create a new list of attribute types for the resulting relation
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        for (int i = 0; i < attr2.size(); i++) {
+            if (!commonAttrs.contains(attr2.get(i))) {
+                newAttrTypes.add(rel2.getTypes().get(i));
+            }
+        }
+
         // Create a new relation for the result
         RelationBuilder rb = new RelationBuilder();
         rb.attributeNames(newAttrs);
+        rb.attributeTypes(newAttrTypes);
         Relation newRel = rb.build();
 
         // Perform the natural join
@@ -250,15 +259,13 @@ public class RAImpl implements RA {
                     }
                 }
                 if (match) {
-                    List<Cell> newRow = new ArrayList<>();
-                    for (String a : newAttrs) {
-                        if (attr1.contains(a)) {
-                            newRow.add(row1.get(attr1.indexOf(a)));
-                        } else {
+                    List<Cell> newRow = new ArrayList<>(row1);
+                    for (String a : attr2) {
+                        if (!commonAttrs.contains(a)) {
                             newRow.add(row2.get(attr2.indexOf(a)));
                         }
                     }
-                    newRel.insert(newRow);
+                    newRel.insert(newRow); // Use the insert method of Relation
                 }
             }
         }

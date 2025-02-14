@@ -33,13 +33,13 @@ public class Driver {
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        student.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/student.csv"); // this path should work but might have to change it to your personal absolute path 
+        student.loadData("mysql_exports/student.csv"); // this path should work but might have to change it to your personal absolute path 
 
         Relation takes = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
-        takes.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/takes.csv");
+        takes.loadData("mysql_exports/takes.csv");
 
         //  predidate implement through anaonymous class
         Predicate creditPredicate = new Predicate() {
@@ -70,13 +70,13 @@ public class Driver {
                 .attributeNames(List.of("building", "room_number", "capacity"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        student.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/classrooms.csv"); // this path should work but might have to change it to your personal absolute path 
+        classrooms.loadData("mysql_exports/classrooms.csv"); // this path should work but might have to change it to your personal absolute path 
 
         Relation times = new RelationBuilder()
                 .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.INTEGER))
                 .build();
-        takes.loadData("project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/times.csv");
+        times.loadData("mysql_exports/times.csv");
 
         //  predidate checking for capacity > 50
         Predicate capacityPredicate = new Predicate() {
