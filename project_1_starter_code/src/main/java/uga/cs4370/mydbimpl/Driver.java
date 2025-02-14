@@ -33,13 +33,13 @@ public class Driver {
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        student.loadData("mysql_exports/student.csv"); // this path should work but might have to change it to your personal absolute path 
+        student.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv"); // this path should work but might have to change it to your personal absolute path 
 
         Relation takes = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
-        takes.loadData("mysql_exports/takes.csv");
+        takes.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
 
         //  predidate implement through anaonymous class
         Predicate creditPredicate = new Predicate() {
@@ -70,13 +70,13 @@ public class Driver {
                 .attributeNames(List.of("building", "room_number", "capacity"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        classrooms.loadData("mysql_exports/classrooms.csv"); // this path should work but might have to change it to your personal absolute path 
+        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv"); // this path should work but might have to change it to your personal absolute path 
 
         Relation times = new RelationBuilder()
                 .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.INTEGER))
                 .build();
-        times.loadData("mysql_exports/times.csv");
+        times.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/time_slot.csv");
 
         //  predidate checking for capacity > 50
         Predicate capacityPredicate = new Predicate() {
@@ -125,19 +125,19 @@ public class Driver {
                 .attributeNames(List.of("ID", "name", "instructor_dept_name", "salary"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.DOUBLE))
                 .build();
-        instructor.loadData("mysql_exports/instructor.csv"); // this path should work but might have to change it to your personal absolute path
+        instructor.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); // this path should work but might have to change it to your personal absolute path
         
         Relation course = new RelationBuilder()
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        course.loadData("mysql_exports/course.csv");
+        course.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
 
         Relation prereqs = new RelationBuilder()
                 .attributeNames(List.of("prereq_course_id", "prereq_id"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING))
                 .build();
-        prereqs.loadData("mysql_exports/prereq.csv");
+        prereqs.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/prereq.csv");
 
         Predicate salaryPredicate = new Predicate() {
             @Override
