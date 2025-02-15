@@ -28,7 +28,7 @@ public class Driver {
         */
 
        // interesting query #1 - catherine
-       // How many students taking credits more than 125 & who are enrolled in at least one course.
+       // How many students taking credits more than 125 & who are enrolled in at least one course and are in the Elec. Eng. Department.
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -41,11 +41,10 @@ public class Driver {
                 .build();
         takes.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
 
-        //  predidate implement through anaonymous class
         Predicate creditPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(3).getAsInt() > 125;
+                return row.get(3).getAsInt() > 125 && row.get(2).getAsString().equals("Elec. Eng.");
             }
 
             @Override
@@ -61,7 +60,7 @@ public class Driver {
 
         Relation finalResult = raImpl.project(joinedStudents, List.of("ID", "name", "dept_name", "tot_cred", "course_id"));
 
-        System.out.println("\nStudents taking tot_creds > 125 and enrolled in at least one course: ");
+        System.out.println("\nStudents taking tot_creds > 125 and enrolled in at least one course and are in the Elec. Eng. Department: ");
         finalResult.print();
 
         // interesting query #2 - Grace Ryoo
