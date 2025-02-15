@@ -212,11 +212,9 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2) {
-        // Get the attributes of the two relations
         List<String> attr1 = rel1.getAttrs();
         List<String> attr2 = rel2.getAttrs();
 
-        // Find common attributes
         List<String> commonAttrs = new ArrayList<>();
         for (String attr : attr1) {
             if (attr2.contains(attr)) {
@@ -224,7 +222,6 @@ public class RAImpl implements RA {
             }
         }
 
-        // Create a new list of attributes for the resulting relation
         List<String> newAttrs = new ArrayList<>(attr1);
         for (String attr : attr2) {
             if (!commonAttrs.contains(attr)) {
@@ -240,13 +237,12 @@ public class RAImpl implements RA {
             }
         }
 
-        // Create a new relation for the result
         RelationBuilder rb = new RelationBuilder();
         rb.attributeNames(newAttrs);
         rb.attributeTypes(newAttrTypes);
+        rb.attributeTypes(newAttrTypes);
         Relation newRel = rb.build();
 
-        // Perform the natural join
         for (int i = 0; i < rel1.getSize(); i++) {
             List<Cell> row1 = rel1.getRow(i);
             for (int j = 0; j < rel2.getSize(); j++) {
@@ -265,7 +261,7 @@ public class RAImpl implements RA {
                             newRow.add(row2.get(attr2.indexOf(a)));
                         }
                     }
-                    newRel.insert(newRow); // Use the insert method of Relation
+                    newRel.insert(newRow); 
                 }
             }
         }
@@ -286,24 +282,24 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p) {
-        // Get the attributes of the two relations
         List<String> attr1 = rel1.getAttrs();
         List<String> attr2 = rel2.getAttrs();
 
-        // Check for common attributes and throw an exception if any are found
         for (String attr : attr1) {
             if (attr2.contains(attr)) {
                 throw new IllegalArgumentException("Relations have common attributes: " + attr);
             }
         }
 
-        // Create a new list of attributes for the resulting relation
         List<String> newAttrs = new ArrayList<>(attr1);
         newAttrs.addAll(attr2);
 
-        // Create a new relation builder for the result
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        newAttrTypes.addAll(rel2.getTypes());
+
         RelationBuilder rb = new RelationBuilder();
         rb.attributeNames(newAttrs);
+        rb.attributeTypes(newAttrTypes);
         Relation newRel = rb.build();
 
         // Perform the theta join
