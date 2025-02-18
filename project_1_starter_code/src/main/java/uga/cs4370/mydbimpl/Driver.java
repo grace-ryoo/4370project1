@@ -196,6 +196,112 @@ public class Driver {
         System.out.println(
                 "\nInstructors who teach courses in the 'Comp. Sci.' department, have a salary greater than $80,000, and are teaching a course with prerequisites: ");
         rel3Result.print();
+
+
+        // interesting query #4 - ADITI
+        // List of students who are enrolled in a "Comp. Sci." course and a "Math" course but never recieved an A in any course.
+        Relation students = new RelationBuilder()
+            .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
+            .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+            .build();
+        students.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv");
+        Relation takesCourse = new RelationBuilder()
+            .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
+            .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
+            .build();
+        takesCourse.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
+        Relation courses = new RelationBuilder()
+            .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
+            .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+            .build();
+        courses.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
+
+        //predicates
+        Predicate compSciCoursePredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(2).getAsString().equals("Comp. Sci.");
+            }
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+        Predicate mathCoursePredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(2).getAsString().equals("Math");
+            }
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+        Predicate gradeAPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(5).getAsString().equals("A");
+            }
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        RAImpl raImpl4 = new RAImpl();
+        Relation compSci = raImpl4.select(courses, compSciCoursePredicate);
+        Relation mathCourses = raImpl4.select(courses, mathCoursePredicate);
+        Relation studentsInCompSci = raImpl4.join(takesCourse, compSci, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(1).getAsString().equals(row2.get(0).getAsString());
+            }
+        });
+        Relation studentsInMath = raImpl4.join(takesCourse, mathCourses, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(1).getAsString().equals(row2.get(0).getAsString());
+            }
+        });
+        Relation studentsInBoth = raImpl4.join(studentsInCompSci, studentsInMath, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(0).getAsString().equals(row2.get(0).getAsString());
+            }
+        });
+
+        Relation studentsWithA = raImpl4.select(takesCourse, gradeAPredicate);
+        Relation studentsWithAIDs = raImpl4.project(studentsWithA, List.of("ID"));
+        Relation finalStudents = raImpl4.diff(studentsInBoth, studentsWithAIDs);
+        Relation studentDetails = raImpl4.join(finalStudents, students, new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return false;
+            }
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return row1.get(0).getAsString().equals(row2.get(0).getAsString()); // Match student ID
+            }
+        });
+        Relation finalResult4 = raImpl4.project(studentDetails, List.of("ID", "name", "dept_name", "tot_cred"));
+        System.out.println("\nList of students enrolled in 'Comp. Sci.' and 'Math' but never received an 'A':");
+        finalResult4.print();
+
+    
+    
+
     /**
 
         List<String> origAttrs = List.of("name", "dept_name");
