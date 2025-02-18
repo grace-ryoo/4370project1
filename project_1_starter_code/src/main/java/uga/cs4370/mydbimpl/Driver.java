@@ -69,7 +69,7 @@ public class Driver {
                 .attributeNames(List.of("building", "room_number", "capacity"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv"); // this path should work but might have to change it to your personal absolute path 
+        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv"); 
 
         Relation times = new RelationBuilder()
                 .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
@@ -299,49 +299,33 @@ public class Driver {
         System.out.println("\nList of students enrolled in 'Comp. Sci.' and 'Math' but never received an 'A':");
         finalResult4.print();
 
-    
-    
+        // interesting query #5 - Grace Ryoo
+        // Departments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom
+        Relation instructorRel = new RelationBuilder()
+                .attributeNames(List.of("ID", "name", "dept_name", "salary"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+                .build();
+        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); 
 
-    /**
+        Relation sectionRel = new RelationBuilder()
+                .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
+                .build();
+        times.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
 
-        List<String> origAttrs = List.of("name", "dept_name");
-        List<String> renamedAttrs = List.of("student_name", "department");
+        Relation teachesRel = new RelationBuilder()
+                .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+                .build();
+        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
 
-        RAImpl raImpl = new RAImpl();
-        Relation renamed = raImpl.rename(student, origAttrs, renamedAttrs);
-        renamed.print(); 
-**/
-        // Test cartesianProduct()
-        /**
-        Relation student = new RelationBuilder()
-            .attributeNames(List.of("ID", "name"))
-            .attributeTypes(List.of(Type.STRING, Type.STRING))
-            .build();
         
-        student.insert(List.of(Cell.val("S001"), Cell.val("John")));
-        student.insert(List.of(Cell.val("S002"), Cell.val("Jane")));
+        System.out.println("\nDepartments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
+        // final.print();
 
-        Relation course = new RelationBuilder()
-            .attributeNames(List.of("course_id", "course_name"))
-            .attributeTypes(List.of(Type.STRING, Type.STRING))
-            .build();
+    
 
-        course.insert(List.of(Cell.val("C101"), Cell.val("Math")));
-        course.insert(List.of(Cell.val("C102"), Cell.val("CS")));
-       
-        System.out.println("Student Relation:");
-        student.print();
-        
-        System.out.println("Course Relation:");
-        course.print();
 
-        RAImpl raImpl = new RAImpl();
-        Relation result = raImpl.cartesianProduct(student, course);
-
-        // Print result relation
-        System.out.println("Cartesian Product Result:");
-        result.print();
-*/
 
     }
 
