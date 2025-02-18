@@ -12,7 +12,6 @@ import uga.cs4370.mydb.Relation;
 import uga.cs4370.mydb.RelationBuilder;
 import uga.cs4370.mydb.Type;
 
-
 public class RAImpl implements RA {
 
     /**
@@ -51,42 +50,44 @@ public class RAImpl implements RA {
         List<String> relAttrs = rel.getAttrs();
         List<Type> relTypes = rel.getTypes();
 
-        // base case: check if attributes present n rel
+        // base case: check if attributes are present in the relation
         for (String attr : attrs) {
             if (!relAttrs.contains(attr)) {
                 throw new IllegalArgumentException("Attribute not found in relation.");
             }
         }
 
-        // find indices and types of attributes
+        // find indices and types
         List<Integer> attrIndex = new ArrayList<>();
         List<Type> projectTypes = new ArrayList<>();
         for (String attr : attrs) {
             int index = relAttrs.indexOf(attr);
-            attrIndex.add(index);
-            projectTypes.add(relTypes.get(index));
+            if (index != -1) {
+                attrIndex.add(index);  // add the index 
+                projectTypes.add(relTypes.get(index));  // add the type 
+            }
         }
 
-        // build new relation with the proper attributes
+        // build with attribute names and types
         Relation projectedRelation = new RelationBuilder()
             .attributeNames(attrs)
             .attributeTypes(projectTypes)
             .build();
 
-        // use set to make sure there are no duplicates
+        // use set for no duplicate rows
         Set<List<Cell>> uniqueRows = new HashSet<>();
 
-        // create new relation with projected data
+        // create projected rows
         for (int i = 0; i < rel.getSize(); i++) {
             List<Cell> originalRow = rel.getRow(i);
             List<Cell> newRow = new ArrayList<>();
             for (int index : attrIndex) {
-                newRow.add(originalRow.get(index));
+                newRow.add(originalRow.get(index));  
             }
-            uniqueRows.add(newRow);
+            uniqueRows.add(newRow);  // add the row to the set 
         }
 
-        // insert uniqueRows (no duplicates) into the new projected relation that was created
+        // insert the unique rows 
         for (List<Cell> row : uniqueRows) {
             projectedRelation.insert(row);
         }
@@ -205,8 +206,35 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
-        return null;
-    }
+        if (origAttr.size() != renamedAttr.size()) {
+            throw new IllegalArgumentException("Attributes in origAttr and renamedAttr must have the same size.");
+        }
+
+        List<String> newAttrNamesList = new ArrayList<>(rel.getAttrs());
+
+        for (int i = 0; i < origAttr.size(); i++) {
+            String ogName = origAttr.get(i);
+            String newName = renamedAttr.get(i);
+
+            if (!rel.hasAttr(ogName)) {
+                throw new IllegalArgumentException("Attribute " + ogName + " is not present in relation.");
+            }
+
+            int relIndex = rel.getAttrIndex(ogName);
+            newAttrNamesList.set(relIndex, newName);
+        }
+
+        Relation renamedRelation = new RelationBuilder()
+                .attributeNames(newAttrNamesList)
+                .attributeTypes(rel.getTypes())
+                .build();
+
+        for (int j = 0; j < rel.getSize(); j++) {
+            renamedRelation.insert(rel.getRow(j));
+        }
+        return renamedRelation;
+    
+    } // rename
 
     /**
      * Performs cartesian product on relations rel1 and rel2.
@@ -217,8 +245,38 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
-        return null;
-    }
+        List<String> rel1Attr = rel1.getAttrs();
+        List<String> rel2Attr = rel2.getAttrs();
+
+        for (String a : rel1Attr) {
+            if (rel2.hasAttr(a)) {
+                throw new IllegalArgumentException("Attributes in rel1 and rel2 have common attributes.");
+            }
+        }
+
+        List<String> newAttrNames = new ArrayList<>(rel1Attr);
+        newAttrNames.addAll(rel2Attr);
+
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        newAttrTypes.addAll(rel2.getTypes());
+
+        Relation cpRelation = new RelationBuilder()
+                .attributeNames(newAttrNames)
+                .attributeTypes(newAttrTypes)
+                .build();
+
+        for (int i = 0; i < rel1.getSize(); i++) {
+            List<Cell> rel1row = rel1.getRow(i);
+            for (int j = 0; j < rel2.getSize(); j++) {
+                List<Cell> rel2row = rel2.getRow(j);
+                List<Cell> combinationRow = new ArrayList<>(rel1row);
+                combinationRow.addAll(rel2row);
+                cpRelation.insert(combinationRow);
+            }
+        }
+
+        return cpRelation;
+    } // cartesianProduct
 
     /**
      * Performs natural join on relations rel1 and rel2.
@@ -227,11 +285,9 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2) {
-        // Get the attributes of the two relations
         List<String> attr1 = rel1.getAttrs();
         List<String> attr2 = rel2.getAttrs();
 
-        // Find common attributes
         List<String> commonAttrs = new ArrayList<>();
         for (String attr : attr1) {
             if (attr2.contains(attr)) {
@@ -239,7 +295,6 @@ public class RAImpl implements RA {
             }
         }
 
-        // Create a new list of attributes for the resulting relation
         List<String> newAttrs = new ArrayList<>(attr1);
         for (String attr : attr2) {
             if (!commonAttrs.contains(attr)) {
@@ -247,12 +302,20 @@ public class RAImpl implements RA {
             }
         }
 
-        // Create a new relation for the result
+        // Create a new list of attribute types for the resulting relation
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        for (int i = 0; i < attr2.size(); i++) {
+            if (!commonAttrs.contains(attr2.get(i))) {
+                newAttrTypes.add(rel2.getTypes().get(i));
+            }
+        }
+
         RelationBuilder rb = new RelationBuilder();
         rb.attributeNames(newAttrs);
+        rb.attributeTypes(newAttrTypes);
+        rb.attributeTypes(newAttrTypes);
         Relation newRel = rb.build();
 
-        // Perform the natural join
         for (int i = 0; i < rel1.getSize(); i++) {
             List<Cell> row1 = rel1.getRow(i);
             for (int j = 0; j < rel2.getSize(); j++) {
@@ -265,15 +328,13 @@ public class RAImpl implements RA {
                     }
                 }
                 if (match) {
-                    List<Cell> newRow = new ArrayList<>();
-                    for (String a : newAttrs) {
-                        if (attr1.contains(a)) {
-                            newRow.add(row1.get(attr1.indexOf(a)));
-                        } else {
+                    List<Cell> newRow = new ArrayList<>(row1);
+                    for (String a : attr2) {
+                        if (!commonAttrs.contains(a)) {
                             newRow.add(row2.get(attr2.indexOf(a)));
                         }
                     }
-                    newRel.insert(newRow);
+                    newRel.insert(newRow); 
                 }
             }
         }
@@ -294,24 +355,24 @@ public class RAImpl implements RA {
      */
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p) {
-        // Get the attributes of the two relations
         List<String> attr1 = rel1.getAttrs();
         List<String> attr2 = rel2.getAttrs();
 
-        // Check for common attributes and throw an exception if any are found
         for (String attr : attr1) {
             if (attr2.contains(attr)) {
                 throw new IllegalArgumentException("Relations have common attributes: " + attr);
             }
         }
 
-        // Create a new list of attributes for the resulting relation
         List<String> newAttrs = new ArrayList<>(attr1);
         newAttrs.addAll(attr2);
 
-        // Create a new relation builder for the result
+        List<Type> newAttrTypes = new ArrayList<>(rel1.getTypes());
+        newAttrTypes.addAll(rel2.getTypes());
+
         RelationBuilder rb = new RelationBuilder();
         rb.attributeNames(newAttrs);
+        rb.attributeTypes(newAttrTypes);
         Relation newRel = rb.build();
 
         // Perform the theta join
