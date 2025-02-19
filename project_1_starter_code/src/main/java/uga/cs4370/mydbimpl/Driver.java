@@ -323,7 +323,8 @@ public class Driver {
         Predicate vowelPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(2).getAsString().startsWith("a") || row.get(2).getAsString().startsWith("e") || row.get(2).getAsString().startsWith("i") || row.get(2).getAsString().startsWith("o") || row.get(2).getAsString().startsWith("u");
+                String buildingLetter = row.get(4).getAsString().toLowerCase();
+                return buildingLetter.startsWith("a") || buildingLetter.startsWith("e") || buildingLetter.startsWith("i") || buildingLetter.startsWith("o") || buildingLetter.startsWith("u");
             }
 
             @Override
@@ -336,7 +337,7 @@ public class Driver {
         Predicate evenPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(2).getAsInt() % 2 == 0;
+                return Integer.parseInt(row.get(5).getAsString()) % 2 == 0;
             }
 
             @Override
