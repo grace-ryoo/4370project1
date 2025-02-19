@@ -349,13 +349,14 @@ public class Driver {
         Relation vowelOrEven = raImpl5.union(buildingCourseYears, roomCourseYears);
         Relation vorEinstJoin = raImpl5.join(vowelOrEven, teachesRel); // natural join through course_id
         Relation yearResult = raImpl5.project(vorEinstJoin, List.of("year"));
+        Relation finalResult5 = raImpl5.rename(yearResult, List.of("year"), List.of("filtered_years"));
 
 
 
 
         
         System.out.println("\nYears with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
-        yearResult.print();
+        finalResult5.print();
 
         
 
