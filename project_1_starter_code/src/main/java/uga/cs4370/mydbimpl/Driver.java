@@ -300,13 +300,7 @@ public class Driver {
         finalResult4.print();
 
         // interesting query #5 - Grace Ryoo
-        // Departments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom
-        Relation instructorRel = new RelationBuilder()
-                .attributeNames(List.of("ID", "name", "dept_name", "salary"))
-                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
-                .build();
-        instructorRel.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); 
-
+        // Years with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom
         Relation sectionRel = new RelationBuilder()
                 .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
@@ -350,20 +344,18 @@ public class Driver {
 
         Relation filteredBuildings = raImpl5.select(sectionRel, vowelPredicate);
         Relation filteredRoomNums = raImpl5.select(sectionRel, evenPredicate);
-        Relation buildingCourseIds = raImpl5.project(filteredBuildings, List.of("course_id"));
-        Relation roomCourseIds = raImpl5.project(filteredRoomNums, List.of("course_id"));  
-        Relation vowelOrEven = raImpl5.union(buildingCourseIds, roomCourseIds);
+        Relation buildingCourseYears = raImpl5.project(filteredBuildings, List.of("course_id", "year"));
+        Relation roomCourseYears = raImpl5.project(filteredRoomNums, List.of("course_id", "year"));  
+        Relation vowelOrEven = raImpl5.union(buildingCourseYears, roomCourseYears);
         Relation vorEinstJoin = raImpl5.join(vowelOrEven, teachesRel); // natural join through course_id
-        Relation instructorNames = raImpl5.project(vorEinstJoin, List.of("ID"));
-        Relation instrJoin = raImpl5.join(instructorNames, instructorRel);
-        Relation deptNames = raImpl5.project(instrJoin, List.of("dept_name"));
-        Relation finalResult5 = raImpl5.rename(deptNames, List.of("dept_name"), List.of("Departments"));
+        Relation yearResult = raImpl5.project(vorEinstJoin, List.of("year"));
+
 
 
 
         
         System.out.println("\nDepartments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
-        finalResult5.print();
+        yearResult.print();
 
         
 
