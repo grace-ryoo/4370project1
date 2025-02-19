@@ -349,19 +349,19 @@ public class Driver {
 
         Relation filteredBuildings = raImpl5.select(sectionRel, vowelPredicate);
         Relation filteredRoomNums = raImpl5.select(sectionRel, evenPredicate);
-        Relation buildingInstructors = raImpl5.project(filteredBuildings, List.of("course_id"));
-        Relation roomInstructors = raImpl5.project(filteredRoomNums, List.of("course_id"));  
+        Relation buildingCourseIds = raImpl5.project(filteredBuildings, List.of("course_id"));
+        Relation roomCourseIds = raImpl5.project(filteredRoomNums, List.of("course_id"));  
+        Relation vowelOrEven = raImpl5.union(buildingCourseIds, roomCourseIds);
+        Relation vorEinstJoin = raImpl5.join(vowelOrEven, teachesRel); // natural join through course_id
+        Relation instructorNames = raImpl5.project(vorEinstJoin, List.of("ID"));
+        Relation instrJoin = raImpl5.join(instructorNames, instructorRel);
+        Relation finalResult5 = raImpl5.project(instrJoin, List.of("dept_name"));
 
 
-        Relation classroomTimeCombinations = raImpl2.cartesianProduct(filteredClassrooms, filteredTimes);
-
-        Relation finalResult2 = raImpl2.project(classroomTimeCombinations, List.of("building", "room_number", "capacity", "time_slot_id", "start_hr", "start_min", "end_hr", "end_min"));
-
-    
 
         
         System.out.println("\nDepartments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
-        // finalResult5.print();
+        finalResult5.print();
 
         
 
