@@ -355,7 +355,8 @@ public class Driver {
         Relation vorEinstJoin = raImpl5.join(vowelOrEven, teachesRel); // natural join through course_id
         Relation instructorNames = raImpl5.project(vorEinstJoin, List.of("ID"));
         Relation instrJoin = raImpl5.join(instructorNames, instructorRel);
-        Relation finalResult5 = raImpl5.project(instrJoin, List.of("dept_name"));
+        Relation deptNames = raImpl5.project(instrJoin, List.of("dept_name"));
+        Relation finalResult5 = raImpl5.rename(deptNames, List.of("dept_name"), List.of("Departments"));
 
 
 
