@@ -354,7 +354,7 @@ public class Driver {
 
 
         
-        System.out.println("\nDepartments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
+        System.out.println("\nYears with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
         yearResult.print();
 
         
