@@ -319,11 +319,51 @@ public class Driver {
                 .build();
         classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
 
-        
-        System.out.println("\nDepartments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
-        // final.print();
+        //  predidate checking for building name that begins with a vowel
+        Predicate vowelPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(2).getAsString().startsWith("a") || row.get(2).getAsString().startsWith("e") || row.get(2).getAsString().startsWith("i") || row.get(2).getAsString().startsWith("o") || row.get(2).getAsString().startsWith("u");
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        //  predidate checking for even-numbered classroom
+        Predicate evenPredicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(2).getAsInt() % 2 == 0;
+            }
+
+            @Override
+            public boolean evaluate(List<Cell> row1, List<Cell> row2) {
+                return false;
+            }
+        };
+
+        RAImpl raImpl5 = new RAImpl();
+
+        Relation filteredBuildings = raImpl5.select(sectionRel, vowelPredicate);
+        Relation filteredRoomNums = raImpl5.select(sectionRel, evenPredicate);
+        Relation buildingInstructors = raImpl5.project(filteredBuildings, List.of("course_id"));
+        Relation roomInstructors = raImpl5.project(filteredRoomNums, List.of("course_id"));  
+
+
+        Relation classroomTimeCombinations = raImpl2.cartesianProduct(filteredClassrooms, filteredTimes);
+
+        Relation finalResult2 = raImpl2.project(classroomTimeCombinations, List.of("building", "room_number", "capacity", "time_slot_id", "start_hr", "start_min", "end_hr", "end_min"));
 
     
+
+        
+        System.out.println("\nDepartments with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
+        // finalResult5.print();
+
+        
 
 
 
