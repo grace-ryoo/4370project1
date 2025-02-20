@@ -1,6 +1,5 @@
 package uga.cs4370.mydbimpl;
 
-
 import java.util.List;
 
 import uga.cs4370.mydb.Cell;
@@ -10,7 +9,7 @@ import uga.cs4370.mydb.RelationBuilder;
 import uga.cs4370.mydb.Type;
 
 public class Driver {
-    
+
     public static void main(String[] args) {
         // Following is an example of how to use the relation class.
         // This creates a table with three columns with below mentioned
@@ -19,16 +18,14 @@ public class Driver {
         // Path should be replaced with a correct file path for a compatible
         // CSV file.
         /**
-        Relation rel1 = new RelationBuilder()
-                .attributeNames(List.of("Col01_Name", "Col02_Name", "Col03_Name"))
-                .attributeTypes(List.of(Type.INTEGER, Type.STRING, Type.DOUBLE))
-                .build();
-        rel1.loadData("/path/to/exported/csv_file");
-        rel1.print();
-        */
+         * Relation rel1 = new RelationBuilder()
+         * .attributeNames(List.of("Col01_Name", "Col02_Name", "Col03_Name"))
+         * .attributeTypes(List.of(Type.INTEGER, Type.STRING, Type.DOUBLE))
+         * .build(); rel1.loadData("/path/to/exported/csv_file"); rel1.print();
+         */
 
-       // interesting query #1 - catherine
-       // How many students taking credits more than 125 & who are enrolled in at least one course and are in the Elec. Eng. Department.
+        // interesting query #1 - catherine
+        // How many students taking credits more than 125 & who are enrolled in at least one course and are in the Elec. Eng. Department.
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -69,7 +66,7 @@ public class Driver {
                 .attributeNames(List.of("building", "room_number", "capacity"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv"); 
+        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv");
 
         Relation times = new RelationBuilder()
                 .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
@@ -119,13 +116,12 @@ public class Driver {
         // find all instructors who teach courses in the "Comp. Sci." department, have a
         // salary greater than $80,000, and are teaching a course that has a
         // prerequisite
-
         Relation instructor = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "instructor_dept_name", "salary"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.DOUBLE))
                 .build();
         instructor.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); // this path should work but might have to change it to your personal absolute path
-        
+
         Relation course = new RelationBuilder()
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -192,28 +188,27 @@ public class Driver {
 
         Relation rel3Result = raImpl3.project(finalJoin,
                 List.of("ID", "name", "dept_name", "salary", "course_id", "title", "prereq_id"));
-        
+
         System.out.println(
                 "\nInstructors who teach courses in the 'Comp. Sci.' department, have a salary greater than $80,000, and are teaching a course with prerequisites: ");
         rel3Result.print();
 
-
         // interesting query #4 - ADITI
         // List of students who are enrolled in a "Comp. Sci." course and a "Math" course but never recieved an A in any course.
         Relation students = new RelationBuilder()
-            .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
-            .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
-            .build();
+                .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+                .build();
         students.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv");
         Relation takesCourse = new RelationBuilder()
-            .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
-            .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
-            .build();
+                .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
+                .build();
         takesCourse.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
         Relation courses = new RelationBuilder()
-            .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
-            .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
-            .build();
+                .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
+                .build();
         courses.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
 
         //predicates
@@ -222,6 +217,7 @@ public class Driver {
             public boolean check(List<Cell> row) {
                 return row.get(2).getAsString().equals("Comp. Sci.");
             }
+
             @Override
             public boolean evaluate(List<Cell> row1, List<Cell> row2) {
                 return false;
@@ -232,6 +228,7 @@ public class Driver {
             public boolean check(List<Cell> row) {
                 return row.get(2).getAsString().equals("Math");
             }
+
             @Override
             public boolean evaluate(List<Cell> row1, List<Cell> row2) {
                 return false;
@@ -242,6 +239,7 @@ public class Driver {
             public boolean check(List<Cell> row) {
                 return row.get(5).getAsString().equals("A");
             }
+
             @Override
             public boolean evaluate(List<Cell> row1, List<Cell> row2) {
                 return false;
@@ -256,6 +254,7 @@ public class Driver {
             public boolean check(List<Cell> row) {
                 return false;
             }
+
             @Override
             public boolean evaluate(List<Cell> row1, List<Cell> row2) {
                 return row1.get(1).getAsString().equals(row2.get(0).getAsString());
@@ -266,6 +265,7 @@ public class Driver {
             public boolean check(List<Cell> row) {
                 return false;
             }
+
             @Override
             public boolean evaluate(List<Cell> row1, List<Cell> row2) {
                 return row1.get(1).getAsString().equals(row2.get(0).getAsString());
@@ -276,6 +276,7 @@ public class Driver {
             public boolean check(List<Cell> row) {
                 return false;
             }
+
             @Override
             public boolean evaluate(List<Cell> row1, List<Cell> row2) {
                 return row1.get(0).getAsString().equals(row2.get(0).getAsString());
@@ -290,6 +291,7 @@ public class Driver {
             public boolean check(List<Cell> row) {
                 return false;
             }
+
             @Override
             public boolean evaluate(List<Cell> row1, List<Cell> row2) {
                 return row1.get(0).getAsString().equals(row2.get(0).getAsString()); // Match student ID
@@ -301,7 +303,6 @@ public class Driver {
 
         // interesting query #5 - Grace Ryoo
         // Years with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom
-        
         Relation sectionRel = new RelationBuilder()
                 .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
