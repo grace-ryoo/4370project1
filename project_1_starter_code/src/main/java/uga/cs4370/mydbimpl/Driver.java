@@ -348,7 +348,7 @@ public class Driver {
         Relation roomYears = raImpl5.project(filteredRoomNums, List.of("year"));
         Relation vowelOrEvenYears = raImpl5.union(buildingYears, roomYears);
         Relation finalResult5 = raImpl5.rename(vowelOrEvenYears, List.of("year"), List.of("filtered_years"));
-        System.out.println("\nYears with instructors who taught in a building that starts with a vowel or an even-numbered classroom:");
+        System.out.println("\nYears with buildings that starts with a vowel or an even-numbered classroom:");
         finalResult5.print();
 
 
