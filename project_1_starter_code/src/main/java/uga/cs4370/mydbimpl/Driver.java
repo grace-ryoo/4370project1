@@ -306,14 +306,14 @@ public class Driver {
                 .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
                 .build();
-        sectionRel.loadData("../4370project1/project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/section.csv");
+        sectionRel.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
 
         Relation teachesRel = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        teachesRel.loadData("../4370project1/project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/teaches.csv");
-//"4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv"
+        teachesRel.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
+
         //  predidate checking for building name that begins with a vowel
         Predicate vowelPredicate = new Predicate() {
             @Override
@@ -352,73 +352,6 @@ public class Driver {
         System.out.println("\nYears with buildings that starts with a vowel or an even-numbered classroom:");
         finalResult5.print();
 
-
-/**
-Relation sectionRel = new RelationBuilder()
-        .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
-        .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
-        .build();
-sectionRel.loadData("../4370project1/project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/section.csv");
-
-Relation teachesRel = new RelationBuilder()
-        .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year"))
-        .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
-        .build();
-teachesRel.loadData("../4370project1/project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/teaches.csv");
-
-// Predicate for buildings that start with a vowel
-Predicate vowelBuildingPredicate = new Predicate() {
-    @Override
-    public boolean check(List<Cell> row) {
-        String buildingLetter = row.get(4).getAsString().toLowerCase();
-        return buildingLetter.startsWith("a") || buildingLetter.startsWith("e") || 
-               buildingLetter.startsWith("i") || buildingLetter.startsWith("o") || 
-               buildingLetter.startsWith("u");
-    }
-
-    @Override
-    public boolean evaluate(List<Cell> row1, List<Cell> row2) {
-        return false;
-    }
-};
-
-// Predicate for even-numbered classrooms
-Predicate evenRoomPredicate = new Predicate() {
-    @Override
-    public boolean check(List<Cell> row) {
-        return Integer.parseInt(row.get(5).getAsString()) % 2 == 0;
-    }
-
-    @Override
-    public boolean evaluate(List<Cell> row1, List<Cell> row2) {
-        return false;
-    }
-};
-
-RAImpl raImpl5 = new RAImpl();
-
-// Apply predicates to filter sections
-Relation filteredBuildings = raImpl5.select(sectionRel, vowelBuildingPredicate);
-Relation filteredRoomNums = raImpl5.select(sectionRel, evenRoomPredicate);
-
-// Project "year" from filtered sections
-Relation buildingYears = raImpl5.project(filteredBuildings, List.of("year"));
-Relation roomYears = raImpl5.project(filteredRoomNums, List.of("year"));
-
-// Project "year" from teaches (instructors teaching in a given year)
-Relation teachesYears = raImpl5.project(teachesRel, List.of("year"));
-
-// Combine all conditions together
-Relation combinedYears = raImpl5.union(buildingYears, roomYears);
-Relation finalYears = raImpl5.union(combinedYears, teachesYears);
-
-// Rename for clarity
-Relation finalResult5 = raImpl5.rename(finalYears, List.of("year"), List.of("filtered_years"));
-
-// Print results
-System.out.println("\nYears with buildings that start with a vowel, an even-numbered classroom, or an instructor who taught:");
-finalResult5.print();
-*/
     }
 
 }
