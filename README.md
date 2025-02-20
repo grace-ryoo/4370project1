@@ -1,5 +1,6 @@
 Group: 4
 Members: Khushi Bhatamrekar, Aditi Chiluguri, Catherine Chu, Grace Ryoo
+
 Contributions:
 Khushi Bhatamrekar:
 - join method (natural)
