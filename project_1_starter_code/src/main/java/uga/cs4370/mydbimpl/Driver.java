@@ -26,7 +26,7 @@ public class Driver {
         rel1.loadData("/path/to/exported/csv_file");
         rel1.print();
         */
-
+/**
        // interesting query #1 - catherine
        // How many students taking credits more than 125 & who are enrolled in at least one course and are in the Elec. Eng. Department.
         Relation student = new RelationBuilder()
@@ -298,21 +298,21 @@ public class Driver {
         Relation finalResult4 = raImpl4.project(studentDetails, List.of("ID", "name", "dept_name", "tot_cred"));
         System.out.println("\nList of students enrolled in 'Comp. Sci.' and 'Math' but never received an 'A':");
         finalResult4.print();
-
+*/
         // interesting query #5 - Grace Ryoo
         // Years with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom
         Relation sectionRel = new RelationBuilder()
                 .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
                 .build();
-        sectionRel.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
+        sectionRel.loadData("../4370project1/project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/section.csv");
 
         Relation teachesRel = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        teachesRel.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
-
+        teachesRel.loadData("../4370project1/project_1_starter_code/src/main/java/uga/cs4370/data/mysql-files/teaches.csv");
+//"4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv"
         //  predidate checking for building name that begins with a vowel
         Predicate vowelPredicate = new Predicate() {
             @Override
@@ -344,22 +344,12 @@ public class Driver {
 
         Relation filteredBuildings = raImpl5.select(sectionRel, vowelPredicate);
         Relation filteredRoomNums = raImpl5.select(sectionRel, evenPredicate);
-        Relation buildingCourseYears = raImpl5.project(filteredBuildings, List.of("course_id", "year"));
-        Relation roomCourseYears = raImpl5.project(filteredRoomNums, List.of("course_id", "year"));  
-        Relation vowelOrEven = raImpl5.union(buildingCourseYears, roomCourseYears);
-        Relation vorEinstJoin = raImpl5.join(vowelOrEven, teachesRel); // natural join through course_id
-        Relation yearResult = raImpl5.project(vorEinstJoin, List.of("year"));
-        Relation finalResult5 = raImpl5.rename(yearResult, List.of("year"), List.of("filtered_years"));
-
-
-
-
-        
-        System.out.println("\nYears with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom: ");
+        Relation buildingYears = raImpl5.project(filteredBuildings, List.of("year"));
+        Relation roomYears = raImpl5.project(filteredRoomNums, List.of("year"));
+        Relation vowelOrEvenYears = raImpl5.union(buildingYears, roomYears);
+        Relation finalResult5 = raImpl5.rename(vowelOrEvenYears, List.of("year"), List.of("filtered_years"));
+        System.out.println("\nYears with instructors who taught in a building that starts with a vowel or an even-numbered classroom:");
         finalResult5.print();
-
-        
-
 
 
     }
