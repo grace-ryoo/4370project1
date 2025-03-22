@@ -150,8 +150,9 @@ public class Driver {
         Relation finalJoin = raImpl3.join(courseJoin, prereqs, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(4).getAsString().equals(row.get(7).getAsString());
-            }
+                String courseId = row.get(4).getAsString();
+                String prereqCourseId = row.get(8).getAsString(); 
+                return courseId.equals(prereqCourseId);            }
         });
 
         Relation rel3Result = raImpl3.project(finalJoin,
@@ -172,14 +173,15 @@ public class Driver {
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
-        takesCourse.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
+        takesCourse
+                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
         Relation courses = new RelationBuilder()
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
         courses.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
 
-        //predicates
+        // predicates
         Predicate compSciCoursePredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
@@ -202,29 +204,67 @@ public class Driver {
         RAImpl raImpl4 = new RAImpl();
         Relation compSci = raImpl4.select(courses, compSciCoursePredicate);
         Relation mathCourses = raImpl4.select(courses, mathCoursePredicate);
-        Relation studentsInCompSci = raImpl4.join(takesCourse, compSci, new Predicate() {
+
+        Relation renamedCompSci = raImpl4.rename(compSci,
+                List.of("course_id", "title", "dept_name"),
+                List.of("cs_course_id", "cs_title", "cs_dept_name"));
+
+        Relation renamedMathCourses = raImpl4.rename(mathCourses,
+                List.of("course_id", "title", "dept_name"),
+                List.of("math_course_id", "math_title", "math_dept_name"));
+
+        // First, rename ID in takesCourse for CompSci join
+        Relation renamedTakesCS = raImpl4.rename(takesCourse,
+                List.of("ID"),
+                List.of("student_id_cs"));
+
+        // Then rename ID in takesCourse for Math join
+        Relation renamedTakesMath = raImpl4.rename(takesCourse,
+                List.of("ID"),
+                List.of("student_id_math"));
+
+        // Update the joins with renamed attributes
+        Relation studentsInCompSci = raImpl4.join(renamedTakesCS, renamedCompSci, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(1).getAsString().equals(row.get(6).getAsString());
+                return row.get(1).getAsString().equals(row.get(6).getAsString()); // course_id equals cs_course_id
             }
         });
-        Relation studentsInMath = raImpl4.join(takesCourse, mathCourses, new Predicate() {
+
+        Relation studentsInMath = raImpl4.join(renamedTakesMath, renamedMathCourses, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(1).getAsString().equals(row.get(6).getAsString());
+                return row.get(1).getAsString().equals(row.get(6).getAsString()); // course_id equals math_course_id
             }
         });
-        Relation studentsInBoth = raImpl4.join(studentsInCompSci, studentsInMath, new Predicate() {
+
+        Relation renamedStudentsInCompSci = raImpl4.rename(studentsInCompSci,
+                List.of("student_id_cs", "course_id", "cs_course_id"),
+                List.of("student_id_final", "cs_takes_course_id", "cs_course_id_final"));
+
+        Relation renamedStudentsInMath = raImpl4.rename(studentsInMath,
+                List.of("student_id_math", "course_id", "math_course_id"),
+                List.of("student_id", "math_takes_course_id", "math_course_id_final"));
+
+        Relation studentsInBoth = raImpl4.join(renamedStudentsInCompSci, renamedStudentsInMath, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                int secondIdIndex = studentsInCompSci.getAttrs().size();
-                return row.get(0).getAsString().equals(row.get(secondIdIndex).getAsString());
+                String studentIdFinal = row.get(0).getAsString(); // student_id_final from first relation
+                String studentId = row.get(renamedStudentsInCompSci.getAttrs().size()).getAsString(); // student_id from
+                                                                                                      // second relation
+                return studentIdFinal.equals(studentId);
             }
         });
 
         Relation studentsWithA = raImpl4.select(takesCourse, gradeAPredicate);
         Relation studentsWithAIDs = raImpl4.project(studentsWithA, List.of("ID"));
-        Relation finalStudents = raImpl4.diff(studentsInBoth, studentsWithAIDs);
+
+        Relation renamedStudentsWithAIDs = raImpl4.rename(studentsWithAIDs,
+                List.of("ID"),
+                List.of("student_id_final"));
+
+        Relation finalStudents = raImpl4.diff(studentsInBoth, renamedStudentsWithAIDs);
+
         Relation studentDetails = raImpl4.join(finalStudents, students, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
