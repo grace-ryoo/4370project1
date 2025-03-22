@@ -25,27 +25,12 @@ public class Driver {
          */
 
         // interesting query #1 - catherine
-        // How many students taking credits more than 125 & who are enrolled in at least
-        // one course and are in the Elec. Eng. Department.
+        // How many students taking credits more than 125 & who are enrolled in at least one course and are in the Elec. Eng. Department.
         Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        student.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv"); // this
-                                                                                                                        // path
-                                                                                                                        // should
-                                                                                                                        // work
-                                                                                                                        // but
-                                                                                                                        // might
-                                                                                                                        // have
-                                                                                                                        // to
-                                                                                                                        // change
-                                                                                                                        // it
-                                                                                                                        // to
-                                                                                                                        // your
-                                                                                                                        // personal
-                                                                                                                        // absolute
-                                                                                                                        // path
+        student.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv"); // this path should work but might have to change it to your personal absolute path 
 
         Relation takes = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
@@ -63,33 +48,28 @@ public class Driver {
         RAImpl raImpl = new RAImpl();
 
         Relation filteredStudents = raImpl.select(student, creditPredicate);
-        Relation joinedStudents = raImpl.join(filteredStudents, takes); // join on student ID
+        Relation joinedStudents = raImpl.join(filteredStudents, takes);  // join on student ID
 
-        Relation finalResult = raImpl.project(joinedStudents,
-                List.of("ID", "name", "dept_name", "tot_cred", "course_id"));
+        Relation finalResult = raImpl.project(joinedStudents, List.of("ID", "name", "dept_name", "tot_cred", "course_id"));
 
-        System.out.println(
-                "\nStudents taking tot_creds > 125 and enrolled in at least one course and are in the Elec. Eng. Department: ");
+        System.out.println("\nStudents taking tot_creds > 125 and enrolled in at least one course and are in the Elec. Eng. Department: ");
         finalResult.print();
 
         // interesting query #2 - Grace Ryoo
-        // What are all possible classroom and time slot combinations on Monday ('M')
-        // with classroom capacities greater than 50 (classroom.capacity > 50)
+        // What are all possible classroom and time slot combinations on Monday ('M') with classroom capacities greater than 50 (classroom.capacity > 50)
         Relation classrooms = new RelationBuilder()
                 .attributeNames(List.of("building", "room_number", "capacity"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        classrooms.loadData(
-                "4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv");
+        classrooms.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv");
 
         Relation times = new RelationBuilder()
                 .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
-                .attributeTypes(
-                        List.of(Type.STRING, Type.STRING, Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.INTEGER))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.INTEGER))
                 .build();
         times.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/time_slot.csv");
 
-        // predidate checking for capacity > 50
+        //  predidate checking for capacity > 50
         Predicate capacityPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
@@ -97,7 +77,7 @@ public class Driver {
             }
         };
 
-        // predidate filtering for Monday time slots
+        //  predidate filtering for Monday time slots
         Predicate mondayPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
@@ -108,12 +88,11 @@ public class Driver {
         RAImpl raImpl2 = new RAImpl();
 
         Relation filteredClassrooms = raImpl2.select(classrooms, capacityPredicate);
-        Relation filteredTimes = raImpl2.select(times, mondayPredicate); // join on student ID
+        Relation filteredTimes = raImpl2.select(times, mondayPredicate);  // join on student ID
 
         Relation classroomTimeCombinations = raImpl2.cartesianProduct(filteredClassrooms, filteredTimes);
 
-        Relation finalResult2 = raImpl2.project(classroomTimeCombinations, List.of("building", "room_number",
-                "capacity", "time_slot_id", "start_hr", "start_min", "end_hr", "end_min"));
+        Relation finalResult2 = raImpl2.project(classroomTimeCombinations, List.of("building", "room_number", "capacity", "time_slot_id", "start_hr", "start_min", "end_hr", "end_min"));
 
         System.out.println("\nAll possible classroom and time slot combinations on day 'M' with capacity > 50: ");
         finalResult2.print();
@@ -126,22 +105,7 @@ public class Driver {
                 .attributeNames(List.of("ID", "name", "instructor_dept_name", "salary"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.DOUBLE))
                 .build();
-        instructor.loadData(
-                "4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); // this
-                                                                                                                  // path
-                                                                                                                  // should
-                                                                                                                  // work
-                                                                                                                  // but
-                                                                                                                  // might
-                                                                                                                  // have
-                                                                                                                  // to
-                                                                                                                  // change
-                                                                                                                  // it
-                                                                                                                  // to
-                                                                                                                  // your
-                                                                                                                  // personal
-                                                                                                                  // absolute
-                                                                                                                  // path
+        instructor.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); // this path should work but might have to change it to your personal absolute path
 
         Relation course = new RelationBuilder()
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
@@ -176,6 +140,7 @@ public class Driver {
         Relation courseJoin = raImpl3.join(instructors, compSciCourses, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
+                // Compare instructor_dept_name with course dept_name
                 String instrDept = row.get(2).getAsString(); // instructor_dept_name
                 String courseDept = row.get(6).getAsString(); // dept_name from courses
                 return instrDept.equals(courseDept);
@@ -185,9 +150,7 @@ public class Driver {
         Relation finalJoin = raImpl3.join(courseJoin, prereqs, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                String courseId = row.get(4).getAsString(); // course_id from courseJoin
-                String prereqCourseId = row.get(8).getAsString(); // prereq_course_id
-                return courseId.equals(prereqCourseId);
+                return row.get(4).getAsString().equals(row.get(7).getAsString());
             }
         });
 
@@ -199,8 +162,7 @@ public class Driver {
         rel3Result.print();
 
         // interesting query #4 - ADITI
-        // List of students who are enrolled in a "Comp. Sci." course and a "Math"
-        // course but never recieved an A in any course.
+        // List of students who are enrolled in a "Comp. Sci." course and a "Math" course but never recieved an A in any course.
         Relation students = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -210,15 +172,14 @@ public class Driver {
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
-        takesCourse
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
+        takesCourse.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
         Relation courses = new RelationBuilder()
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
         courses.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
 
-        // predicates
+        //predicates
         Predicate compSciCoursePredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
@@ -241,67 +202,29 @@ public class Driver {
         RAImpl raImpl4 = new RAImpl();
         Relation compSci = raImpl4.select(courses, compSciCoursePredicate);
         Relation mathCourses = raImpl4.select(courses, mathCoursePredicate);
-
-        Relation renamedCompSci = raImpl4.rename(compSci,
-                List.of("course_id", "title", "dept_name"),
-                List.of("cs_course_id", "cs_title", "cs_dept_name"));
-
-        Relation renamedMathCourses = raImpl4.rename(mathCourses,
-                List.of("course_id", "title", "dept_name"),
-                List.of("math_course_id", "math_title", "math_dept_name"));
-
-        // First, rename ID in takesCourse for CompSci join
-        Relation renamedTakesCS = raImpl4.rename(takesCourse,
-                List.of("ID"),
-                List.of("student_id_cs"));
-
-        // Then rename ID in takesCourse for Math join
-        Relation renamedTakesMath = raImpl4.rename(takesCourse,
-                List.of("ID"),
-                List.of("student_id_math"));
-
-        // Update the joins with renamed attributes
-        Relation studentsInCompSci = raImpl4.join(renamedTakesCS, renamedCompSci, new Predicate() {
+        Relation studentsInCompSci = raImpl4.join(takesCourse, compSci, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(1).getAsString().equals(row.get(6).getAsString()); // course_id equals cs_course_id
+                return row.get(1).getAsString().equals(row.get(6).getAsString());
             }
         });
-
-        Relation studentsInMath = raImpl4.join(renamedTakesMath, renamedMathCourses, new Predicate() {
+        Relation studentsInMath = raImpl4.join(takesCourse, mathCourses, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(1).getAsString().equals(row.get(6).getAsString()); // course_id equals math_course_id
+                return row.get(1).getAsString().equals(row.get(6).getAsString());
             }
         });
-
-        Relation renamedStudentsInCompSci = raImpl4.rename(studentsInCompSci,
-                List.of("student_id_cs", "course_id", "cs_course_id"),
-                List.of("student_id_final", "cs_takes_course_id", "cs_course_id_final"));
-
-        Relation renamedStudentsInMath = raImpl4.rename(studentsInMath,
-                List.of("student_id_math", "course_id", "math_course_id"),
-                List.of("student_id", "math_takes_course_id", "math_course_id_final"));
-
-        Relation studentsInBoth = raImpl4.join(renamedStudentsInCompSci, renamedStudentsInMath, new Predicate() {
+        Relation studentsInBoth = raImpl4.join(studentsInCompSci, studentsInMath, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                String studentIdFinal = row.get(0).getAsString(); // student_id_final from first relation
-                String studentId = row.get(renamedStudentsInCompSci.getAttrs().size()).getAsString(); // student_id from
-                                                                                                      // second relation
-                return studentIdFinal.equals(studentId);
+                int secondIdIndex = studentsInCompSci.getAttrs().size();
+                return row.get(0).getAsString().equals(row.get(secondIdIndex).getAsString());
             }
         });
 
         Relation studentsWithA = raImpl4.select(takesCourse, gradeAPredicate);
         Relation studentsWithAIDs = raImpl4.project(studentsWithA, List.of("ID"));
-
-        Relation renamedStudentsWithAIDs = raImpl4.rename(studentsWithAIDs,
-                List.of("ID"),
-                List.of("student_id_final"));
-
-        Relation finalStudents = raImpl4.diff(studentsInBoth, renamedStudentsWithAIDs);
-
+        Relation finalStudents = raImpl4.diff(studentsInBoth, studentsWithAIDs);
         Relation studentDetails = raImpl4.join(finalStudents, students, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
@@ -314,36 +237,29 @@ public class Driver {
         finalResult4.print();
 
         // interesting query #5 - Grace Ryoo
-        // Years with instructors who taught in a building that's name begins with a
-        // vowel or in an even-numbered classroom
+        // Years with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom
         Relation sectionRel = new RelationBuilder()
-                .attributeNames(
-                        List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
-                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING,
-                        Type.STRING))
+                .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
                 .build();
-        sectionRel
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
+        sectionRel.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
 
         Relation teachesRel = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        teachesRel
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
+        teachesRel.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
 
-        // predidate checking for building name that begins with a vowel
+        //  predidate checking for building name that begins with a vowel
         Predicate vowelPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
                 String buildingLetter = row.get(4).getAsString().toLowerCase();
-                return buildingLetter.startsWith("a") || buildingLetter.startsWith("e")
-                        || buildingLetter.startsWith("i") || buildingLetter.startsWith("o")
-                        || buildingLetter.startsWith("u");
+                return buildingLetter.startsWith("a") || buildingLetter.startsWith("e") || buildingLetter.startsWith("i") || buildingLetter.startsWith("o") || buildingLetter.startsWith("u");
             }
         };
 
-        // predidate checking for even-numbered classroom
+        //  predidate checking for even-numbered classroom
         Predicate evenPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
