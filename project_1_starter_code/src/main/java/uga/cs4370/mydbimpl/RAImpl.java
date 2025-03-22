@@ -380,10 +380,10 @@ public class RAImpl implements RA {
             List<Cell> row1 = rel1.getRow(i);
             for (int j = 0; j < rel2.getSize(); j++) {
                 List<Cell> row2 = rel2.getRow(j);
-                if (p.evaluate(row1, row2)) {
-                    List<Cell> newRow = new ArrayList<>(row1);
-                    newRow.addAll(row2);
-                    newRel.insert(newRow); 
+                List<Cell> combinedRow = new ArrayList<>(row1);
+                combinedRow.addAll(row2);
+                if (p.check(combinedRow)) {
+                    newRel.insert(combinedRow);
                 }
             }
         }
