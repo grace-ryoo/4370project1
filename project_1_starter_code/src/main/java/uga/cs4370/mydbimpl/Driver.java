@@ -27,7 +27,7 @@ public class Driver {
         // interesting query #1 - catherine
         // How many students taking credits more than 125 & who are enrolled in at least
         // one course and are in the Elec. Eng. Department.
-        Relation student = new RelationBuilder()
+        /* Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
@@ -312,7 +312,7 @@ public class Driver {
         Relation finalResult4 = raImpl4.project(studentDetails, List.of("ID", "name", "dept_name", "tot_cred"));
         System.out.println("\nList of students enrolled in 'Comp. Sci.' and 'Math' but never received an 'A':");
         finalResult4.print();
-
+ */
         // interesting query #5 - Grace Ryoo
         // Years with instructors who taught in a building that's name begins with a
         // vowel or in an even-numbered classroom
@@ -323,14 +323,15 @@ public class Driver {
                         Type.STRING))
                 .build();
         sectionRel
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
+            .loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
+
 
         Relation teachesRel = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
         teachesRel
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
+            .loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
 
         // predidate checking for building name that begins with a vowel
         Predicate vowelPredicate = new Predicate() {
