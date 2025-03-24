@@ -26,7 +26,7 @@ public class Driver {
 
         // interesting query #1 - catherine
         // How many students taking credits more than 125 & who are enrolled in at least one course and are in the Elec. Eng. Department.
-        Relation student = new RelationBuilder()
+        /* Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
@@ -160,7 +160,7 @@ public class Driver {
 
         System.out.println(
                 "\nInstructors who teach courses in the 'Comp. Sci.' department, have a salary greater than $80,000, and are teaching a course with prerequisites: ");
-        rel3Result.print();
+        rel3Result.print(); */
 
         // interesting query #4 - ADITI
         // List of students who are enrolled in a "Comp. Sci." course and a "Math" course but never recieved an A in any course.
@@ -168,18 +168,18 @@ public class Driver {
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        students.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv");
+        students.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv");
         Relation takesCourse = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
         takesCourse
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
+                .loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
         Relation courses = new RelationBuilder()
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        courses.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
+        courses.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
 
         // predicates
         Predicate compSciCoursePredicate = new Predicate() {
