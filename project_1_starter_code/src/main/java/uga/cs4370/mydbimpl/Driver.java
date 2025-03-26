@@ -206,22 +206,22 @@ public class Driver {
         Relation mathCourses = raImpl4.select(courses, mathCoursePredicate);
 
         Relation renamedCompSci = raImpl4.rename(compSci,
-                List.of("course_id", "title", "dept_name"),
-                List.of("cs_course_id", "cs_title", "cs_dept_name"));
+                List.of("course_id", "title", "dept_name", "credits"),
+                List.of("cs_course_id", "cs_title", "cs_dept_name", "creds"));
 
         Relation renamedMathCourses = raImpl4.rename(mathCourses,
-                List.of("course_id", "title", "dept_name"),
-                List.of("math_course_id", "math_title", "math_dept_name"));
+                List.of("course_id", "title", "dept_name", "credits"),
+                List.of("math_course_id", "math_title", "math_dept_name", "credits"));
 
         // First, rename ID in takesCourse for CompSci join
         Relation renamedTakesCS = raImpl4.rename(takesCourse,
-                List.of("ID"),
-                List.of("student_id_cs"));
+                List.of("ID", "course_id", "sec_id", "semester", "year", "grade"),
+                List.of("student_id_cs", "c_id", "s_id", "sem", "yea", "gra"));
 
         // Then rename ID in takesCourse for Math join
         Relation renamedTakesMath = raImpl4.rename(takesCourse,
-                List.of("ID"),
-                List.of("student_id_math"));
+                List.of("ID", "course_id", "sec_id", "semester", "year", "grade"),
+                List.of("student_id_math", "course_id", "sec_id", "semester", "year", "grade"));
 
         // Update the joins with renamed attributes
         Relation studentsInCompSci = raImpl4.join(renamedTakesCS, renamedCompSci, new Predicate() {
@@ -239,7 +239,7 @@ public class Driver {
         });
 
         Relation renamedStudentsInCompSci = raImpl4.rename(studentsInCompSci,
-                List.of("student_id_cs", "course_id", "cs_course_id"),
+                List.of("student_id_cs", "c_id", "cs_course_id"),
                 List.of("student_id_final", "cs_takes_course_id", "cs_course_id_final"));
 
         Relation renamedStudentsInMath = raImpl4.rename(studentsInMath,
@@ -256,14 +256,24 @@ public class Driver {
             }
         });
 
+        Relation studentsNoAs = raImpl4.project(studentsInBoth, List.of("student_id_final"));
         Relation studentsWithA = raImpl4.select(takesCourse, gradeAPredicate);
         Relation studentsWithAIDs = raImpl4.project(studentsWithA, List.of("ID"));
+
+        System.out.println("Attributes in studentsInBoth: " + studentsInBoth.getAttrs());
+        System.out.println("Attributes in studentsWithAIDs: " + studentsWithAIDs.getAttrs());
+        System.out.println("Data in studentsWithAIDs:");
+        studentsWithAIDs.print();
+        System.out.println("Data in takesCourse:");
+        studentsWithA.print();
+
+        
 
         Relation renamedStudentsWithAIDs = raImpl4.rename(studentsWithAIDs,
                 List.of("ID"),
                 List.of("student_id_final"));
 
-        Relation finalStudents = raImpl4.diff(studentsInBoth, renamedStudentsWithAIDs);
+        Relation finalStudents = raImpl4.diff(studentsNoAs, renamedStudentsWithAIDs);
 
         Relation studentDetails = raImpl4.join(finalStudents, students, new Predicate() {
             @Override
@@ -278,7 +288,7 @@ public class Driver {
 
         // interesting query #5 - Grace Ryoo
         // Years with instructors who taught in a building that's name begins with a vowel or in an even-numbered classroom
-        Relation sectionRel = new RelationBuilder()
+        /* Relation sectionRel = new RelationBuilder()
                 .attributeNames(List.of("course_id", "sec_id", "semester", "year", "building", "room_number", "time_slot_id"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING, Type.STRING, Type.STRING))
                 .build();
@@ -316,7 +326,7 @@ public class Driver {
         Relation vowelOrEvenYears = raImpl5.union(buildingYears, roomYears);
         Relation finalResult5 = raImpl5.rename(vowelOrEvenYears, List.of("year"), List.of("filtered_years"));
         System.out.println("\nYears with buildings that starts with a vowel or an even-numbered classroom:");
-        finalResult5.print();
+        finalResult5.print(); */
 
     }
 
