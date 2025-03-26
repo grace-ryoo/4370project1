@@ -170,6 +170,7 @@ public class RAImpl implements RA {
         //create a new relation builder for the results
         RelationBuilder rb = new RelationBuilder();
         rb.attributeNames(attr1);
+        rb.attributeTypes(rel1.getTypes());
         Relation result = rb.build();
 
         //adds rows from rel1 not in rel2

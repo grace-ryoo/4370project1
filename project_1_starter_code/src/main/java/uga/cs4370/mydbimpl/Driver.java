@@ -243,22 +243,26 @@ public class Driver {
         Relation mathCourses = raImpl4.select(courses, mathCoursePredicate);
 
         Relation renamedCompSci = raImpl4.rename(compSci,
-                List.of("course_id", "title", "dept_name"),
-                List.of("cs_course_id", "cs_title", "cs_dept_name"));
+                List.of("course_id", "title", "dept_name", "credits"),
+                List.of("cs_course_id", "cs_title", "cs_dept_name", "cs_credits"));
 
         Relation renamedMathCourses = raImpl4.rename(mathCourses,
-                List.of("course_id", "title", "dept_name"),
-                List.of("math_course_id", "math_title", "math_dept_name"));
+                List.of("course_id", "title", "dept_name", "credits"),
+                List.of("math_course_id", "math_title", "math_dept_name", "math_credits"));
 
         // First, rename ID in takesCourse for CompSci join
         Relation renamedTakesCS = raImpl4.rename(takesCourse,
-                List.of("ID"),
-                List.of("student_id_cs"));
+                //List.of("ID"),
+                //List.of("student_id_cs"));
+                List.of("ID", "course_id", "sec_id", "semester", "year", "grade"),
+                List.of("rcs_student_id", "rcs_course_id", "cs_sec_id", "cs_semester", "cs_year", "cs_grade"));
 
         // Then rename ID in takesCourse for Math join
         Relation renamedTakesMath = raImpl4.rename(takesCourse,
-                List.of("ID"),
-                List.of("student_id_math"));
+                //List.of("ID"),
+                //List.of("student_id_math"));
+                List.of("ID", "course_id", "sec_id", "semester", "year", "grade"),
+                List.of("rmath_student_id", "rmath_course_id", "math_sec_id", "math_semester", "math_year", "math_grade"));
 
         // Update the joins with renamed attributes
         Relation studentsInCompSci = raImpl4.join(renamedTakesCS, renamedCompSci, new Predicate() {
@@ -276,12 +280,16 @@ public class Driver {
         });
 
         Relation renamedStudentsInCompSci = raImpl4.rename(studentsInCompSci,
-                List.of("student_id_cs", "course_id", "cs_course_id"),
-                List.of("student_id_final", "cs_takes_course_id", "cs_course_id_final"));
+                //List.of("student_id_cs", "course_id", "cs_course_id"),
+                //List.of("student_id_final", "cs_takes_course_id", "cs_course_id_final"));
+                List.of("rcs_student_id"),
+                List.of("student_id"));
 
         Relation renamedStudentsInMath = raImpl4.rename(studentsInMath,
-                List.of("student_id_math", "course_id", "math_course_id"),
-                List.of("student_id", "math_takes_course_id", "math_course_id_final"));
+                //List.of("student_id_math", "course_id", "math_course_id"),
+                //List.of("student_id", "math_takes_course_id", "math_course_id_final"));
+                List.of("rmath_student_id"),
+                List.of("mstudent_id"));
 
         Relation studentsInBoth = raImpl4.join(renamedStudentsInCompSci, renamedStudentsInMath, new Predicate() {
             @Override
@@ -300,12 +308,21 @@ public class Driver {
                 List.of("ID"),
                 List.of("student_id_final"));
 
-        Relation finalStudents = raImpl4.diff(studentsInBoth, renamedStudentsWithAIDs);
+        Relation studentsInBothIDs = raImpl4.project(studentsInBoth, List.of("student_id"));
 
-        Relation studentDetails = raImpl4.join(finalStudents, students, new Predicate() {
+        Relation renamedStudentsInBothIDs = raImpl4.rename(studentsInBothIDs,
+                List.of("student_id"),
+                List.of("student_id_final"));
+                       
+                
+        Relation finalStudentIDs = raImpl4.diff(renamedStudentsInBothIDs, renamedStudentsWithAIDs);
+
+        //Relation finalStudents = raImpl4.diff(studentsInBoth, renamedStudentsWithAIDs);
+
+        Relation studentDetails = raImpl4.join(finalStudentIDs, students, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                int secondIdIndex = finalStudents.getAttrs().size();
+                int secondIdIndex = finalStudentIDs.getAttrs().size();
                 return row.get(0).getAsString().equals(row.get(secondIdIndex).getAsString());
             }
         });
