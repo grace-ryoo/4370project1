@@ -27,11 +27,11 @@ public class Driver {
         // interesting query #1 - catherine
         // How many students taking credits more than 125 & who are enrolled in at least
         // one course and are in the Elec. Eng. Department.
-        Relation student = new RelationBuilder()
+        /* Relation student = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        student.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv"); // this
+        student.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv"); // this
                                                                                                                         // path
                                                                                                                         // should
                                                                                                                         // work
@@ -51,7 +51,7 @@ public class Driver {
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
-        takes.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
+        takes.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
 
         Predicate creditPredicate = new Predicate() {
             @Override
@@ -80,14 +80,14 @@ public class Driver {
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
         classrooms.loadData(
-                "4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv");
+                "C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/classroom.csv");
 
         Relation times = new RelationBuilder()
                 .attributeNames(List.of("time_slot_id", "day", "start_hr", "start_min", "end_hr", "end_min"))
                 .attributeTypes(
                         List.of(Type.STRING, Type.STRING, Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.INTEGER))
                 .build();
-        times.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/time_slot.csv");
+        times.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/time_slot.csv");
 
         // predidate checking for capacity > 50
         Predicate capacityPredicate = new Predicate() {
@@ -127,7 +127,7 @@ public class Driver {
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.DOUBLE))
                 .build();
         instructor.loadData(
-                "4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); // this
+                "C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/instructor.csv"); // this
                                                                                                                   // path
                                                                                                                   // should
                                                                                                                   // work
@@ -147,13 +147,13 @@ public class Driver {
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        course.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
+        course.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
 
         Relation prereqs = new RelationBuilder()
                 .attributeNames(List.of("prereq_course_id", "prereq_id"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING))
                 .build();
-        prereqs.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/prereq.csv");
+        prereqs.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/prereq.csv");
 
         Predicate salaryPredicate = new Predicate() {
             @Override
@@ -196,7 +196,7 @@ public class Driver {
 
         System.out.println(
                 "\nInstructors who teach courses in the 'Comp. Sci.' department, have a salary greater than $80,000, and are teaching a course with prerequisites: ");
-        rel3Result.print();
+        rel3Result.print(); */
 
         // interesting query #4 - ADITI
         // List of students who are enrolled in a "Comp. Sci." course and a "Math"
@@ -205,18 +205,18 @@ public class Driver {
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        students.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv");
+        students.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv");
         Relation takesCourse = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER, Type.STRING))
                 .build();
         takesCourse
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
+                .loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/takes.csv");
         Relation courses = new RelationBuilder()
                 .attributeNames(List.of("course_id", "title", "dept_name", "credits"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
-        courses.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
+        courses.loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/course.csv");
 
         // predicates
         Predicate compSciCoursePredicate = new Predicate() {
@@ -243,26 +243,22 @@ public class Driver {
         Relation mathCourses = raImpl4.select(courses, mathCoursePredicate);
 
         Relation renamedCompSci = raImpl4.rename(compSci,
-                List.of("course_id", "title", "dept_name", "credits"),
-                List.of("cs_course_id", "cs_title", "cs_dept_name", "cs_credits"));
+                List.of("course_id", "title", "dept_name"),
+                List.of("cs_course_id", "cs_title", "cs_dept_name"));
 
         Relation renamedMathCourses = raImpl4.rename(mathCourses,
-                List.of("course_id", "title", "dept_name", "credits"),
-                List.of("math_course_id", "math_title", "math_dept_name", "math_credits"));
+                List.of("course_id", "title", "dept_name"),
+                List.of("math_course_id", "math_title", "math_dept_name"));
 
         // First, rename ID in takesCourse for CompSci join
         Relation renamedTakesCS = raImpl4.rename(takesCourse,
-                //List.of("ID"),
-                //List.of("student_id_cs"));
-                List.of("ID", "course_id", "sec_id", "semester", "year", "grade"),
-                List.of("rcs_student_id", "rcs_course_id", "cs_sec_id", "cs_semester", "cs_year", "cs_grade"));
+                List.of("ID"),
+                List.of("student_id_cs"));
 
         // Then rename ID in takesCourse for Math join
         Relation renamedTakesMath = raImpl4.rename(takesCourse,
-                //List.of("ID"),
-                //List.of("student_id_math"));
-                List.of("ID", "course_id", "sec_id", "semester", "year", "grade"),
-                List.of("rmath_student_id", "rmath_course_id", "math_sec_id", "math_semester", "math_year", "math_grade"));
+                List.of("ID"),
+                List.of("student_id_math"));
 
         // Update the joins with renamed attributes
         Relation studentsInCompSci = raImpl4.join(renamedTakesCS, renamedCompSci, new Predicate() {
@@ -280,16 +276,12 @@ public class Driver {
         });
 
         Relation renamedStudentsInCompSci = raImpl4.rename(studentsInCompSci,
-                //List.of("student_id_cs", "course_id", "cs_course_id"),
-                //List.of("student_id_final", "cs_takes_course_id", "cs_course_id_final"));
-                List.of("rcs_student_id"),
-                List.of("student_id"));
+                List.of("student_id_cs", "course_id", "cs_course_id"),
+                List.of("student_id_final", "cs_takes_course_id", "cs_course_id_final"));
 
         Relation renamedStudentsInMath = raImpl4.rename(studentsInMath,
-                //List.of("student_id_math", "course_id", "math_course_id"),
-                //List.of("student_id", "math_takes_course_id", "math_course_id_final"));
-                List.of("rmath_student_id"),
-                List.of("mstudent_id"));
+                List.of("student_id_math", "course_id", "math_course_id"),
+                List.of("student_id", "math_takes_course_id", "math_course_id_final"));
 
         Relation studentsInBoth = raImpl4.join(renamedStudentsInCompSci, renamedStudentsInMath, new Predicate() {
             @Override
@@ -308,21 +300,12 @@ public class Driver {
                 List.of("ID"),
                 List.of("student_id_final"));
 
-        Relation studentsInBothIDs = raImpl4.project(studentsInBoth, List.of("student_id"));
+        Relation finalStudents = raImpl4.diff(studentsInBoth, renamedStudentsWithAIDs);
 
-        Relation renamedStudentsInBothIDs = raImpl4.rename(studentsInBothIDs,
-                List.of("student_id"),
-                List.of("student_id_final"));
-                       
-                
-        Relation finalStudentIDs = raImpl4.diff(renamedStudentsInBothIDs, renamedStudentsWithAIDs);
-
-        //Relation finalStudents = raImpl4.diff(studentsInBoth, renamedStudentsWithAIDs);
-
-        Relation studentDetails = raImpl4.join(finalStudentIDs, students, new Predicate() {
+        Relation studentDetails = raImpl4.join(finalStudents, students, new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                int secondIdIndex = finalStudentIDs.getAttrs().size();
+                int secondIdIndex = finalStudents.getAttrs().size();
                 return row.get(0).getAsString().equals(row.get(secondIdIndex).getAsString());
             }
         });
@@ -340,14 +323,14 @@ public class Driver {
                         Type.STRING))
                 .build();
         sectionRel
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
+                .loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/section.csv");
 
         Relation teachesRel = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
         teachesRel
-                .loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
+                .loadData("C:/Users/ger85847/Desktop/4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/teaches.csv");
 
         // predidate checking for building name that begins with a vowel
         Predicate vowelPredicate = new Predicate() {
