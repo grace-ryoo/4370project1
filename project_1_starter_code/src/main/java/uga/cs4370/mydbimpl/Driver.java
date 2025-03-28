@@ -32,20 +32,20 @@ public class Driver {
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
                 .build();
         student.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/student.csv"); // this
-                                                                                                                        // path
-                                                                                                                        // should
-                                                                                                                        // work
-                                                                                                                        // but
-                                                                                                                        // might
-                                                                                                                        // have
-                                                                                                                        // to
-                                                                                                                        // change
-                                                                                                                        // it
-                                                                                                                        // to
-                                                                                                                        // your
-                                                                                                                        // personal
-                                                                                                                        // absolute
-                                                                                                                        // path
+        // path
+        // should
+        // work
+        // but
+        // might
+        // have
+        // to
+        // change
+        // it
+        // to
+        // your
+        // personal
+        // absolute
+        // path
 
         Relation takes = new RelationBuilder()
                 .attributeNames(List.of("ID", "course_id", "sec_id", "semester", "year", "grade"))
@@ -56,7 +56,7 @@ public class Driver {
         Predicate creditPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(3).getAsInt() > 125 && row.get(2).getAsString().equals("Elec. Eng.");
+                return row.get(3).getAsInt() > 127 && row.get(2).getAsString().equals("Elec. Eng.");
             }
         };
 
@@ -72,6 +72,7 @@ public class Driver {
                 "\nStudents taking tot_creds > 125 and enrolled in at least one course and are in the Elec. Eng. Department: ");
         finalResult.print();
 
+        
         // interesting query #2 - Grace Ryoo
         // What are all possible classroom and time slot combinations on Monday ('M')
         // with classroom capacities greater than 50 (classroom.capacity > 50)
@@ -390,7 +391,7 @@ public class Driver {
         Relation finalResult5 = raImpl5.rename(vowelOrEvenYears, List.of("year"), List.of("filtered_years"));
         System.out.println("\nYears with buildings that starts with a vowel or an even-numbered classroom:");
         finalResult5.print();
-
-    } 
+         
+    }
 
 }
