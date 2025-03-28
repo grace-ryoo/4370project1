@@ -200,7 +200,7 @@ public class Driver {
 
         // interesting query #4 - ADITI
         // List of students who are enrolled in a "Comp. Sci." course and a "Math"
-        // course but never recieved an A in any course.
+        // course but never recieved an A in any course AND have credits > 120:");
         Relation students = new RelationBuilder()
                 .attributeNames(List.of("ID", "name", "dept_name", "tot_cred"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.INTEGER))
@@ -326,8 +326,20 @@ public class Driver {
                 return row.get(0).getAsString().equals(row.get(secondIdIndex).getAsString());
             }
         });
-        Relation finalResult4 = raImpl4.project(studentDetails, List.of("ID", "name", "dept_name", "tot_cred"));
-        System.out.println("\nList of students enrolled in 'Comp. Sci.' and 'Math' but never received an 'A':");
+        Relation result4 = raImpl4.project(studentDetails, List.of("ID", "name", "dept_name", "tot_cred"));
+        //System.out.println("\nList of students enrolled in 'Comp. Sci.' and 'Math' but never received an 'A':");
+        //finalResult4.print();
+
+        Predicate creditAbove120Predicate = new Predicate() {
+            @Override
+            public boolean check(List<Cell> row) {
+                return row.get(3).getAsInt() > 120;
+            }
+        };
+        
+        Relation finalResult4 = raImpl4.select(result4, creditAbove120Predicate);
+        
+        System.out.println("\nList of students enrolled in 'Comp. Sci.' and 'Math' but never received an 'A' AND have credits > 120:");
         finalResult4.print();
 
         // interesting query #5 - Grace Ryoo
