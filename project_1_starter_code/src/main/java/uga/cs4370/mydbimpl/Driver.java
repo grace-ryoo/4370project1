@@ -75,7 +75,7 @@ public class Driver {
         
         // interesting query #2 - Grace Ryoo
         // What are all possible classroom and time slot combinations on Monday ('M')
-        // with classroom capacities greater than 50 (classroom.capacity > 50)
+        // with classroom capacities greater than 60 (classroom.capacity > 60)
         Relation classrooms = new RelationBuilder()
                 .attributeNames(List.of("building", "room_number", "capacity"))
                 .attributeTypes(List.of(Type.STRING, Type.STRING, Type.INTEGER))
@@ -90,7 +90,7 @@ public class Driver {
                 .build();
         times.loadData("4370project1/project_1_starter_code/target/classes/uga/cs4370/data/mysql-files/time_slot.csv");
 
-        // predidate checking for capacity > 50
+        // predidate checking for capacity > 60
         Predicate capacityPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
@@ -116,7 +116,7 @@ public class Driver {
         Relation finalResult2 = raImpl2.project(classroomTimeCombinations, List.of("building", "room_number",
                 "capacity", "time_slot_id", "start_hr", "start_min", "end_hr", "end_min"));
 
-        System.out.println("\nAll possible classroom and time slot combinations on day 'M' with capacity > 50: ");
+        System.out.println("\nAll possible classroom and time slot combinations on day 'M' with capacity > 60: ");
         finalResult2.print();
 
         // interesting query #3 - Khushi Bhatamrekar
