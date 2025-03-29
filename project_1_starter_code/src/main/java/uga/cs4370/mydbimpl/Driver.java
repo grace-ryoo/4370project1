@@ -94,7 +94,7 @@ public class Driver {
         Predicate capacityPredicate = new Predicate() {
             @Override
             public boolean check(List<Cell> row) {
-                return row.get(2).getAsInt() > 50;
+                return row.get(2).getAsInt() > 60;
             }
         };
 
