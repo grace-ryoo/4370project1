@@ -69,7 +69,7 @@ public class Driver {
                 List.of("ID", "name", "dept_name", "tot_cred", "course_id"));
 
         System.out.println(
-                "\nStudents taking tot_creds > 125 and enrolled in at least one course and are in the Elec. Eng. Department: ");
+                "\nStudents taking tot_creds > 127 and enrolled in at least one course and are in the Elec. Eng. Department: ");
         finalResult.print();
 
         
